@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 // Auth
-import 'package:sakeena/features/auth_screens/forgot_password_page.dart';
-import 'package:sakeena/features/auth_screens/login_screen.dart';
-import 'package:sakeena/features/auth_screens/otp_page.dart';
-import 'package:sakeena/features/auth_screens/reset_password_page.dart';
-import 'package:sakeena/features/auth_screens/sign_up_screen.dart';
-import 'package:sakeena/features/auth_screens/splash_screen.dart';
-import 'package:sakeena/features/auth_screens/success_page.dart';
+import 'package:sakeena/features/auth/auth_screens/forgot_password_page.dart';
+import 'package:sakeena/features/auth/auth_screens/login_screen.dart';
+import 'package:sakeena/features/auth/auth_screens/otp_page.dart';
+import 'package:sakeena/features/auth/auth_screens/reset_password_page.dart';
+import 'package:sakeena/features/auth/auth_screens/sign_up_screen.dart';
+import 'package:sakeena/features/auth/auth_screens/splash_screen.dart';
+import 'package:sakeena/features/auth/auth_screens/success_page.dart';
 
 // Guest
 import 'package:sakeena/features/guest/about/about_screen.dart';
@@ -108,11 +108,11 @@ GoRouter createRouter() {
       ),
       GoRoute(
         path: AppRoutes.login,
-        builder: (context, state) => const LoginPage(),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: AppRoutes.signup,
-        builder: (context, state) => const SignupPage(),
+        builder: (context, state) => const SignUpScreen(),
       ),
       GoRoute(
         path: AppRoutes.forgot,

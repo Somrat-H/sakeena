@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/core/app_theme.dart';
+import 'package:sakeena/features/auth/controller/auth_controller.dart';
 import 'package:sakeena/features/teachers/submission/presentation/providers/submission_provider.dart';
 import 'package:sakeena/route/go_route.dart'; // assuming this exports createRouter()
 import 'package:sakeena/view_model/auth_view_model.dart';
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => UserProvider()),
-            ChangeNotifierProvider(create: (_) => AuthViewModel()),
+            ChangeNotifierProvider(create: (_) => AuthControlle()),
             ChangeNotifierProvider(create: (_) => SubmissionProvider()),
           ],
           child: MaterialApp.router(

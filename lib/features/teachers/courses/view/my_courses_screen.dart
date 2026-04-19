@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:sakeena/features/teachers/course_detail/course_detail_screen.dart';
 import 'package:sakeena/features/teachers/courses/controller/teacher_course_controller.dart';
 import 'package:sakeena/features/teachers/courses/view/widget/course_shimmer_card.dart';
+import 'package:sakeena/features/teachers/courses/view/widget/category_shimmer_button.dart';
 import 'package:sakeena/route/go_route.dart';
 import 'package:sakeena/widgets/category_filter_button.dart';
 import 'package:sakeena/widgets/course_card.dart';
@@ -13,20 +14,14 @@ import 'package:sakeena/widgets/view_only_access_card.dart';
 import '../../../../core/app_theme.dart';
 import '../../_old_course_detail/course_detail.model.dart';
 
-class MyCoursesScreen extends StatefulWidget {
+class MyCoursesScreen extends StatelessWidget {
   const MyCoursesScreen({super.key});
-
-  @override
-  State<MyCoursesScreen> createState() => _MyCoursesScreenState();
-}
-
-class _MyCoursesScreenState extends State<MyCoursesScreen> {
-  String selectedCategory = 'All';
-  final List<String> categories = ['All', 'Mental Health', 'Spiritual Growth'];
 
   @override
   Widget build(BuildContext context) {
     final controller = context.watch<TeacherCourseController>();
+   
+    final dynamicCategories = ['All'] + (controller.courseCategroyResponse.results?.map((e) => e.name ?? '').toList() ?? []);
     return Scaffold(
       appBar: CustomAppBar(),
       body: SingleChildScrollView(
@@ -61,25 +56,33 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                 ),
               ),
               SizedBox(height: 12.h),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: categories.map((category) {
-                    return Padding(
-                      padding: EdgeInsets.only(right: 8.w),
-                      child: CategoryFilterButton(
-                        label: category,
-                        isSelected: selectedCategory == category,
-                        onTap: () {
-                          setState(() {
-                            selectedCategory = category;
-                          });
-                        },
+              controller.isCategoryLoading
+                  ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: List.generate(3, (index) => Padding(
+                          padding: EdgeInsets.only(right: 8.w),
+                          child: const CategoryFilterButtonShimmer(),
+                        )),
                       ),
-                    );
-                  }).toList(),
-                ),
-              ),
+                    )
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: dynamicCategories.map((category) {
+                          return Padding(
+                            padding: EdgeInsets.only(right: 8.w),
+                            child: CategoryFilterButton(
+                              label: category,
+                              isSelected: controller.selectedCategory == category,
+                              onTap: () {
+                                controller.setSelectedCategory(category);
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
               SizedBox(height: 20.h),
               Text(
                 'My Courses',
@@ -106,11 +109,18 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount:
-                          controller.teacherCoruseResponse.results!.length,
+                      itemCount: controller.selectedCategory == 'All'
+                          ? controller.teacherCoruseResponse.results!.length
+                          : controller.teacherCoruseResponse.results!
+                              .where((course) => course.category!.name == controller.selectedCategory)
+                              .length,
                       itemBuilder: (context, index) {
-                        final course =
-                            controller.teacherCoruseResponse.results![index];
+                        final filteredCourses = controller.selectedCategory == 'All'
+                            ? controller.teacherCoruseResponse.results!
+                            : controller.teacherCoruseResponse.results!
+                                .where((course) => course.category!.name == controller.selectedCategory)
+                                .toList();
+                        final course = filteredCourses[index];
                         return CourseCardTeacher(
                           imageUrl:
                               course.thumbnail ??
@@ -127,7 +137,7 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                           ),
                           price: course.price!,
                           status: course.category!.name!,
-                          onViewDetails: () {
+                          onViewDetails: () async{
                             if (course.status == 'upcoming') {
                               // Show popup dialog for Upcoming courses
                               showDialog(
@@ -159,32 +169,16 @@ class _MyCoursesScreenState extends State<MyCoursesScreen> {
                                 ),
                               );
                             } else {
-                              // Navigate to full screen course details for Active/Live courses
-                              context.push(
-                                AppRoutes.courseDetails,
-                                extra: CourseDetailModelOld(
-                                  courseTitle: course.title!,
-                                  instructor:
-                                      "${course.teacher!.user!.firstName!} ${course.teacher!.user!.lastName}",
-                                  category: course.category!.name!,
-                                  status: course.status!,
-                                  price: course.price!,
-                                  duration: '${course.durationInWeeks} weeks',
-                                  totalLessons: course.totalLessons!,
-                                  rating: 4.5,
-                                  totalEnrolled: 120,
-                                  students: [
-                                    {
-                                      'name': 'Emma Wilson',
-                                      'email': 'emma.w@email.com',
-                                    },
-                                    {
-                                      'name': 'Michael Chen',
-                                      'email': 'michael.c@email.com',
-                                    },
-                                  ],
-                                ),
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) => const Center(child: CircularProgressIndicator()),
                               );
+                              await controller.getCourseDetails(course.id!);
+                              if (context.mounted) {
+                                
+                                context.push(AppRoutes.courseDetails);
+                              }
                             }
                           },
 

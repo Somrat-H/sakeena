@@ -22,7 +22,9 @@ class AppUrls {
   static String updateTeacherProfile = "/teacher-profiles/";
 
   static String getTeacherCourse = "/courses";
-  
 
+  static String getCourseCategory = "/course-categories";
+
+  static String getCourseDetails(int id) => "/courses/$id";
 
 }

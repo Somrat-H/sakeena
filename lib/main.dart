@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
               create: (_) => TeacherProfileController()..fetchTeacherProfile(),
             ),
              ChangeNotifierProvider(
-              create: (_) => TeacherCourseController()..getTeacherCourse(),
+              create: (_) => TeacherCourseController()..getCourseCategory()..getTeacherCourse(),
             ),
             ChangeNotifierProvider(create: (_) => SubmissionProvider()),
           ],

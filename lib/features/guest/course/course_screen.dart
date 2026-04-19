@@ -430,12 +430,12 @@ class _CoursesPageState extends State<CoursesPage> {
                             _CenteredCourseCard(
                               onTap: () {
                                 // Navigate to course detail screen
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CourseDetailScreen(courseData: course),
-                                  ),
-                                );
+                                // Navigator.of(context).push(
+                                //   MaterialPageRoute(
+                                //     builder: (context) =>
+                                //         CourseDetailScreen(courseData: course),
+                                //   ),
+                                // );
                               },
                               child: CourseCard(course: CourseData.mock()),
                             ),

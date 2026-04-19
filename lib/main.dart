@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/core/app_theme.dart';
 import 'package:sakeena/features/auth/controller/auth_controller.dart';
+import 'package:sakeena/features/student/profile/controller/profile_controller.dart';
+import 'package:sakeena/features/teachers/courses/controller/teacher_course_controller.dart';
+import 'package:sakeena/features/teachers/profile/controller/teacher_profile_controller.dart';
 import 'package:sakeena/features/teachers/submission/presentation/providers/submission_provider.dart';
 import 'package:sakeena/route/go_route.dart'; // assuming this exports createRouter()
 import 'package:sakeena/view_model/auth_view_model.dart';
@@ -45,6 +48,15 @@ class MyApp extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(create: (_) => UserProvider()),
             ChangeNotifierProvider(create: (_) => AuthControlle()),
+            ChangeNotifierProvider(
+              create: (_) => ProfileController()..fetchStudentProfile(),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => TeacherProfileController()..fetchTeacherProfile(),
+            ),
+             ChangeNotifierProvider(
+              create: (_) => TeacherCourseController()..getTeacherCourse(),
+            ),
             ChangeNotifierProvider(create: (_) => SubmissionProvider()),
           ],
           child: MaterialApp.router(

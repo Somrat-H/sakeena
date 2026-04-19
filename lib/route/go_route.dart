@@ -8,7 +8,7 @@ import 'package:sakeena/features/auth/auth_screens/otp_page.dart';
 import 'package:sakeena/features/auth/auth_screens/reset_password_page.dart';
 import 'package:sakeena/features/auth/auth_screens/sign_up_screen.dart';
 import 'package:sakeena/features/auth/auth_screens/splash_screen.dart';
-import 'package:sakeena/features/auth/auth_screens/success_page.dart';
+import 'package:sakeena/features/auth/auth_screens/success_page.dart'; 
 
 // Guest
 import 'package:sakeena/features/guest/about/about_screen.dart';
@@ -34,10 +34,10 @@ import 'package:sakeena/features/guest/video/video_library_screen.dart';
 import 'package:sakeena/features/student/course/my_course_screen.dart';
 import 'package:sakeena/features/student/home/home_screen.dart';
 import 'package:sakeena/features/student/live_class/student_live_class_screen.dart';
-import 'package:sakeena/features/student/profile/privecy_policy_screen.dart';
-import 'package:sakeena/features/student/profile/profile_and_settings_screen.dart';
-import 'package:sakeena/features/student/profile/profile_screen.dart';
-import 'package:sakeena/features/student/profile/terms_and_condition.dart';
+import 'package:sakeena/features/student/profile/view/privecy_policy_screen.dart';
+import 'package:sakeena/features/student/profile/view/profile_and_settings_screen.dart';
+import 'package:sakeena/features/student/profile/view/profile_screen.dart';
+import 'package:sakeena/features/student/profile/view/terms_and_condition.dart';
 import 'package:sakeena/features/student/teachers/teachers_screen.dart';
 
 // Subscription

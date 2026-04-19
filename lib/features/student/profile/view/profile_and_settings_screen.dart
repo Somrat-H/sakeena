@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:sakeena/features/student/profile/controller/profile_controller.dart';
 import 'package:sakeena/route/go_route.dart';
 import 'package:sakeena/widgets/custom_app_bar.dart';
 import 'package:sakeena/widgets/custom_button.dart';
+import 'package:sakeena/widgets/custom_snackbar.dart';
 
 class ProfileSettingsPage extends StatefulWidget {
   const ProfileSettingsPage({super.key});
@@ -14,16 +20,6 @@ class ProfileSettingsPage extends StatefulWidget {
 
 class _ProfileSettingsPageState extends State<ProfileSettingsPage>
     with SingleTickerProviderStateMixin {
-  late final Map<String, TextEditingController> controllers = {
-    'fullName': TextEditingController(text: 'Student Name'),
-    'email': TextEditingController(text: 'student@example.com'),
-    'phone': TextEditingController(text: '+1 234 567 8900'),
-    'location': TextEditingController(text: 'New York, USA'),
-    'currentPassword': TextEditingController(),
-    'newPassword': TextEditingController(),
-    'confirmPassword': TextEditingController(),
-  };
-
   late final Map<String, bool> passwordVisibility = {
     'current': false,
     'new': false,
@@ -33,22 +29,15 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
   bool isEditing = false;
 
   @override
-  void dispose() {
-    for (var controller in controllers.values) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = context.watch<ProfileController>();
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: const CustomAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _buildProfileAvatar(),
+            _buildProfileAvatar(context, controller),
             SizedBox(height: 24.h),
             _buildProfileForm(),
             SizedBox(height: 24.h),
@@ -60,7 +49,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
     );
   }
 
-  Widget _buildProfileAvatar() {
+  Widget _buildProfileAvatar(BuildContext context, ProfileController controller) {
     return Container(
       color: Colors.white,
       width: double.infinity,
@@ -71,15 +60,32 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
             children: [
               CircleAvatar(
                 radius: 50.r,
-                backgroundImage: const AssetImage(
-                  'assets/images/profile_image.jpg',
-                ),
+                // Logic to switch between local file and placeholder/network image
+                backgroundImage:
+                    context.read<ProfileController>().pickedImage != null
+                    ? FileImage(
+                            File(
+                              context
+                                  .read<ProfileController>()
+                                  .pickedImage!
+                                  .path,
+                            ),
+                          )
+                          as ImageProvider
+                    : NetworkImage(
+                        context
+                            .read<ProfileController>()
+                            .stundetProfileResponse
+                            .profilePicture!,
+                      ),
               ),
               Positioned(
                 bottom: 0,
                 right: 0,
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    _showImageSourceSheet(context, controller);
+                  },
                   child: Container(
                     width: 36.w,
                     height: 36.w,
@@ -127,36 +133,98 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
               children: [
                 SizedBox(height: 16.h),
                 _buildEditableField(
-                  'fullName',
-                  'Full Name',
-                  Icons.person_outline,
+                  label: 'First Name',
+                  icon: Icons.person_outline,
+                  initialValue:
+                      "${context.read<ProfileController>().stundetProfileResponse.firstName ?? ''} "
+                          .trim(),
+                  isEditing: true,
+                  onChanged: (value) {
+                    context.read<ProfileController>().stundetProfileResponse.firstName = value;
+                  },
                 ),
                 SizedBox(height: 12.h),
                 _buildEditableField(
-                  'email',
-                  'Email Address',
-                  Icons.email_outlined,
+                  label: 'Last Name',
+                  icon: Icons.person_outline,
+                  initialValue:
+                      " ${context.read<ProfileController>().stundetProfileResponse.lastName ?? ''}"
+                          .trim(),
+                  isEditing: true,
+                  onChanged: (value) {
+                    context.read<ProfileController>().stundetProfileResponse.lastName = value;
+                  },
                 ),
                 SizedBox(height: 12.h),
+                // Email
                 _buildEditableField(
-                  'phone',
-                  'Phone Number',
-                  Icons.phone_outlined,
+                  label: 'Email Address',
+                  icon: Icons.email_outlined,
+                  initialValue:
+                      context
+                          .read<ProfileController>()
+                          .stundetProfileResponse
+                          .email ??
+                      '',
+                  isEditing: true,
+                  onChanged: (value) =>
+                      context
+                              .read<ProfileController>()
+                              .stundetProfileResponse
+                              .email =
+                          value,
                 ),
                 SizedBox(height: 12.h),
+                // Phone
                 _buildEditableField(
-                  'location',
-                  'Location',
-                  Icons.location_on_outlined,
+                  label: 'Phone Number',
+                  icon: Icons.phone_outlined,
+                  initialValue:
+                      context
+                          .read<ProfileController>()
+                          .stundetProfileResponse
+                          .phoneNumber ??
+                      '',
+                  isEditing: true,
+                  onChanged: (value) =>
+                      context
+                              .read<ProfileController>()
+                              .stundetProfileResponse
+                              .phoneNumber =
+                          value,
+                ),
+                SizedBox(height: 12.h),
+                // Location
+                _buildEditableField(
+                  label: 'Location',
+                  icon: Icons.location_on_outlined,
+                  initialValue:
+                      context
+                          .read<ProfileController>()
+                          .stundetProfileResponse
+                          .location ??
+                      '',
+                  isEditing: true,
+                  onChanged: (value) =>
+                      context
+                              .read<ProfileController>()
+                              .stundetProfileResponse
+                              .location =
+                          value,
                 ),
                 SizedBox(height: 20.h),
-                CustomButton(
-                  text: isEditing ? 'Save Changes' : 'Edit Profile',
-                  onPressed: () => setState(() => isEditing = !isEditing),
-                  isGradient: true,
-                  width: double.infinity,
-                  textColor: Colors.white,
-                ),
+              CustomButton(
+  text: 'Save Changes',
+  isLoading: context.watch<ProfileController>().isLoading, // Listens to loading state
+  onPressed: () async {
+    final ok = await context.read<ProfileController>().updateStundentProfile();
+    if (context.mounted && ok) {
+      CustomSnackbar.show(context, message: "Profile Updated Successfully");
+    }
+  },
+  isGradient: true,
+  width: double.infinity,
+)
               ],
             ),
           ),
@@ -206,7 +274,7 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
                 SizedBox(height: 20.h),
                 CustomButton(
                   text: 'Update Password',
-                  onPressed: _validateAndUpdatePassword,
+                  onPressed: () {},
                   isGradient: true,
                   width: double.infinity,
                   textColor: Colors.white,
@@ -286,7 +354,81 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
     );
   }
 
-  Widget _buildEditableField(String key, String label, IconData icon) {
+  void _showImageSourceSheet(BuildContext context, ProfileController vm) {
+  showModalBottomSheet(
+    context: context,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+    ),
+    builder: (context) => Padding(
+      padding: EdgeInsets.all(20.w),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "Select Profile Picture",
+            style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _imageSourceOption(
+                icon: Icons.camera_alt_outlined,
+                label: "Camera",
+                onTap: () {
+                  vm.pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+              _imageSourceOption(
+                icon: Icons.photo_library_outlined,
+                label: "Gallery",
+                onTap: () {
+                  vm.pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 20.h),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _imageSourceOption({
+  required IconData icon,
+  required String label,
+  required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(12.w),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5F5F5),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: const Color(0xFF5B72EE), size: 28.sp),
+        ),
+        SizedBox(height: 8.h),
+        Text(label, style: TextStyle(fontSize: 12.sp)),
+      ],
+    ),
+  );
+}
+
+  Widget _buildEditableField({
+    required String label,
+    required IconData icon,
+    required String initialValue, // Pass the string directly
+    required bool isEditing,
+    Function(String)? onChanged,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -304,10 +446,12 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
             ),
             borderRadius: BorderRadius.circular(8.r),
           ),
-
-          child: TextField(
-            controller: controllers[key],
+          child: TextFormField(
+            // Switched from TextField to TextFormField
+            initialValue: initialValue,
             enabled: isEditing,
+            onChanged: onChanged,
+            style: TextStyle(fontSize: 13.sp),
             decoration: InputDecoration(
               prefixIcon: Icon(icon, size: 18.sp, color: Colors.grey),
               border: InputBorder.none,
@@ -316,7 +460,6 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
                 horizontal: 12.w,
               ),
             ),
-            style: TextStyle(fontSize: 13.sp),
           ),
         ),
       ],
@@ -344,7 +487,6 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
             borderRadius: BorderRadius.circular(8.r),
           ),
           child: TextField(
-            controller: controllers[key],
             obscureText: !isVisible,
             decoration: InputDecoration(
               prefixIcon: Icon(
@@ -373,30 +515,6 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
         ),
       ],
     );
-  }
-
-  void _validateAndUpdatePassword() {
-    final current = controllers['currentPassword']!.text;
-    final newPwd = controllers['newPassword']!.text;
-    final confirm = controllers['confirmPassword']!.text;
-
-    if (current.isEmpty || newPwd.isEmpty || confirm.isEmpty) {
-      _showSnackBar('All fields are required', Colors.red);
-      return;
-    }
-    if (newPwd.length < 6) {
-      _showSnackBar('Password must be at least 6 characters', Colors.red);
-      return;
-    }
-    if (newPwd != confirm) {
-      _showSnackBar('Passwords do not match', Colors.red);
-      return;
-    }
-
-    _showSnackBar('Password updated successfully!', Colors.green);
-    controllers['currentPassword']!.clear();
-    controllers['newPassword']!.clear();
-    controllers['confirmPassword']!.clear();
   }
 
   void _showLogoutDialog() {

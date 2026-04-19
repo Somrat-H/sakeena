@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sakeena/network/app_url/app_urls.dart';
 
@@ -210,6 +211,7 @@ class ApiService {
     Map<String, String>? queryParams,
     File? image,
     String? authToken,
+    String? imageParamName,
   }) async {
     try {
       Uri uri = Uri.parse('${AppUrls.baseUrl}$endpoint');
@@ -231,7 +233,7 @@ class ApiService {
 
         final imageBytes = await image.readAsBytes();
         var multipartFile = http.MultipartFile.fromBytes(
-          'image',
+          imageParamName!,
           imageBytes,
           filename: image.uri.pathSegments.last,
         );
@@ -245,7 +247,9 @@ class ApiService {
       final response = await request.send();
 
       final responseBody = await http.Response.fromStream(response);
-
+      if(kDebugMode){
+        debugPrint(_handleResponse(responseBody).toString());
+      }
       // Return the parsed response
       return _handleResponse(responseBody);
     } on http.ClientException catch (e) {

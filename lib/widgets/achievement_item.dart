@@ -42,14 +42,7 @@ class AchievementItem extends StatelessWidget {
               ),
             ),
           ),
-          GestureDetector(
-            onTap: onRemove,
-            child: Icon(
-              Icons.close,
-              color: AppTheme.errorColor,
-              size: 20.sp,
-            ),
-          ),
+          
         ],
       ),
     );

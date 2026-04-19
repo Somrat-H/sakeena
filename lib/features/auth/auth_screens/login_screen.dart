@@ -169,7 +169,7 @@ class LoginScreen extends StatelessWidget {
                                   if(context.mounted){
                                       controller.userResponse.results!.first.role ==
                                           "teacher"
-                                      ? context.go(AppRoutes.teachersScreen)
+                                      ? context.go( TeachersRoutes.dashboard)
                                       : controller
                                                 .userResponse
                                                 .results!

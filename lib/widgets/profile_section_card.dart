@@ -28,14 +28,18 @@ class ProfileSectionCard extends StatelessWidget {
               size: 20.sp,
             ),
             SizedBox(width: 8.w),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.primaryColor,
-              ),
-            ),
+           Expanded(
+      child: Text(
+        title,
+        overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
+        maxLines: 1,
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+          color: AppTheme.primaryColor,
+        ),
+      ),
+    ),
           ],
         ),
         SizedBox(height: 16.h),

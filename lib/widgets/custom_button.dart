@@ -11,6 +11,7 @@ class CustomButton extends StatelessWidget {
   final bool isWhiteOutlined;
   final Widget? icon;
   final Color? textColor;
+  final bool isLoading; // 1. Added isLoading property
 
   const CustomButton({
     super.key,
@@ -23,33 +24,34 @@ class CustomButton extends StatelessWidget {
     this.isWhiteOutlined = false,
     this.icon,
     this.textColor,
+    this.isLoading = false, // Default to false
   });
 
   @override
   Widget build(BuildContext context) {
-    final effectiveTextColor =
-        textColor ??
+    // Determine effective text color
+    final effectiveTextColor = textColor ??
         (isWhiteOutlined
-            ? Colors.grey
+            ? Colors.white.withOpacity(0.9) // Fixed logic for better visibility
             : isOutlined
-            ? Colors.black
-            : Colors.grey);
+                ? Colors.black
+                : Colors.white);
 
     // Determine border side
     final borderSide = isWhiteOutlined
         ? BorderSide(color: Colors.white.withOpacity(0.7))
         : isOutlined
-        ? const BorderSide(color: Colors.grey)
-        : BorderSide.none;
+            ? const BorderSide(color: Colors.grey)
+            : BorderSide.none;
 
     final bgColor = (isOutlined || isWhiteOutlined) ? Colors.transparent : null;
 
     return SizedBox(
-      // width: width ?? double.infinity,
       width: width,
       height: height.h,
       child: ElevatedButton(
-        onPressed: onPressed,
+        // 2. Disable button if isLoading is true
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           elevation: (isOutlined || isWhiteOutlined) ? 0 : 2,
@@ -71,25 +73,36 @@ class CustomButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(30.r),
           ),
           child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null) ...[icon!, SizedBox(width: 8.w)],
-                Flexible(
-                  child: Text(
-                    text,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    softWrap: false,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w500,
+            // 3. Toggle between Content and Loader
+            child: isLoading
+                ? SizedBox(
+                    height: 18.h,
+                    width: 18.h,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      // Matches the text color
+                      valueColor: AlwaysStoppedAnimation<Color>(effectiveTextColor),
                     ),
+                  )
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (icon != null) ...[icon!, SizedBox(width: 8.w)],
+                      Flexible(
+                        child: Text(
+                          text,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: TextStyle(
+                            color: effectiveTextColor,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
           ),
         ),
       ),

@@ -1,12 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:sakeena/core/app_theme.dart';
+import 'package:sakeena/features/student/profile/controller/profile_controller.dart';
+import 'package:sakeena/features/teachers/profile/controller/teacher_profile_controller.dart';
+import 'package:sakeena/widgets/custom_snackbar.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<ProfileController>();
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -71,7 +79,8 @@ class ProfileHeader extends StatelessWidget {
 class ProfileHeaderTeacher extends StatefulWidget {
   final String initials; // still used for avatar fallback
   final VoidCallback onUploadPhoto;
-  final String initialFullName;
+  final String initialFirstName;
+  final String initialLastName;
   final String initialTitle;
   final String initialEmail;
   final String initialLocation;
@@ -81,7 +90,8 @@ class ProfileHeaderTeacher extends StatefulWidget {
     super.key,
     required this.initials,
     required this.onUploadPhoto,
-    required this.initialFullName,
+    required this.initialFirstName,
+    required this.initialLastName,
     required this.initialTitle,
     required this.initialEmail,
     required this.initialLocation,
@@ -92,127 +102,28 @@ class ProfileHeaderTeacher extends StatefulWidget {
 }
 
 class _ProfileHeaderTeacherState extends State<ProfileHeaderTeacher> {
-  late TextEditingController _nameController;
-  late TextEditingController _titleController;
-  late TextEditingController _emailController;
-  late TextEditingController _locationController;
-
-  bool _isEditing = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: widget.initialFullName);
-    _titleController = TextEditingController(text: widget.initialTitle);
-    _emailController = TextEditingController(text: widget.initialEmail);
-    _locationController = TextEditingController(text: widget.initialLocation);
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _titleController.dispose();
-    _emailController.dispose();
-    _locationController.dispose();
-    super.dispose();
-  }
-
-  void _toggleEditMode() {
-    if (_isEditing) {
-      // ── SAVE logic here ────────────────────────────────
-      // You can call a bloc event, repository method, etc.
-      final updatedData = {
-        'fullName': _nameController.text.trim(),
-        'title': _titleController.text.trim(),
-        'email': _emailController.text.trim(),
-        'location': _locationController.text.trim(),
-      };
-
-      // Example:
-      // context.read<ProfileBloc>().add(UpdateProfileEvent(updatedData));
-      // await profileRepo.updateTeacherProfile(updatedData);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated')),
-      );
-    }
-
-    setState(() {
-      _isEditing = !_isEditing;
-    });
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
+    // Watch for loading and image changes, but use read for static data to avoid cursor jumps
+    final controller = context.watch<TeacherProfileController>();
+    final teacher = controller.teacherProfileResponse;
+
     return Column(
       children: [
         SizedBox(height: 24.h),
 
-        // Profile Avatar (unchanged)
-        Container(
-          width: 80.w,
-          height: 80.w,
-          decoration: BoxDecoration(
-            color: AppTheme.primaryColor,
-            shape: BoxShape.circle,
-          ),
-          child: Center(
-            child: Text(
-              widget.initials,
-              style: TextStyle(
-                fontSize: 28.sp,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-          ),
+        // Profile Avatar
+        CircleAvatar(
+          radius: 50.r,
+          backgroundColor: Colors.grey.shade200,
+          backgroundImage:NetworkImage(teacher.profilePicture!)
         ),
 
         SizedBox(height: 16.h),
 
-        // Edit Profile / Save Button
-        GestureDetector(
-          onTap: _toggleEditMode,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryColor,
-              borderRadius: BorderRadius.circular(8.r),
-            ),
-            child: Text(
-              _isEditing ? 'Save Changes' : 'Edit Profile',
-              style: TextStyle(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-
-        if (_isEditing) ...[
-          SizedBox(height: 8.h),
-          GestureDetector(
-            onTap: () {
-              // Reset to original values and exit edit mode
-              setState(() {
-                _nameController.text = widget.initialFullName;
-                _titleController.text = widget.initialTitle;
-                _emailController.text = widget.initialEmail;
-                _locationController.text = widget.initialLocation;
-                _isEditing = false;
-              });
-            },
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: Colors.grey.shade700,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
-        ],
+   
 
         SizedBox(height: 8.h),
         Text(
@@ -225,29 +136,33 @@ class _ProfileHeaderTeacherState extends State<ProfileHeaderTeacher> {
 
         SizedBox(height: 20.h),
 
-        // ── Full Name / Title ───────────────────────────────────────
+        // Fields
         _buildEditableField(
-          label: 'Full Name / Title',
-          controller: _nameController,
-          isEditing: _isEditing,
+          label: 'First Name',
+          initialValue: teacher.user?.firstName ?? "N/A",
+          isEditing: false,
+          onChanged: (val) => teacher.user?.firstName = val,
         ),
-
         SizedBox(height: 12.h),
-
-        // ── Public Email ────────────────────────────────────────────
+        _buildEditableField(
+          label: 'Last Name',
+          initialValue: teacher.user?.lastName ?? "N/A",
+          isEditing: false,
+          onChanged: (val) => teacher.user?.lastName = val,
+        ),
+        SizedBox(height: 12.h),
         _buildEditableField(
           label: 'Public Email',
-          controller: _emailController,
-          isEditing: _isEditing,
+          initialValue: teacher.user?.email ?? "N/A",
+          isEditing: false,
+          onChanged: (val) => teacher.user?.email = val,
         ),
-
         SizedBox(height: 12.h),
-
-        // ── Location ────────────────────────────────────────────────
         _buildEditableField(
           label: 'Location',
-          controller: _locationController,
-          isEditing: _isEditing,
+          initialValue: teacher.location ?? "N/A",
+          isEditing: false,
+          onChanged: (val) => teacher.location = val,
         ),
       ],
     );
@@ -255,8 +170,9 @@ class _ProfileHeaderTeacherState extends State<ProfileHeaderTeacher> {
 
   Widget _buildEditableField({
     required String label,
-    required TextEditingController controller,
+    required String initialValue,
     required bool isEditing,
+    required Function(String)? onChanged,
   }) {
     return Container(
       width: double.infinity,
@@ -264,23 +180,25 @@ class _ProfileHeaderTeacherState extends State<ProfileHeaderTeacher> {
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(8.r),
+        border: isEditing ? Border.all(color: AppTheme.primaryColor.withOpacity(0.3)) : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label, // Changed from initialValue to label for better UX
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 11.sp,
               fontWeight: FontWeight.w600,
-              color: Colors.grey.shade700,
+              color: Colors.grey.shade600,
             ),
           ),
           SizedBox(height: 4.h),
-
           if (isEditing)
-            TextField(
-              controller: controller,
+            TextFormField(
+              key: ValueKey(label), // Ensures field doesn't dispose randomly
+              onChanged: onChanged,
+              initialValue: initialValue == "N/A" ? "" : initialValue,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
@@ -288,13 +206,13 @@ class _ProfileHeaderTeacherState extends State<ProfileHeaderTeacher> {
               ),
               decoration: const InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.zero,
+                contentPadding: EdgeInsets.symmetric(vertical: 4),
                 border: InputBorder.none,
               ),
             )
           else
             Text(
-              controller.text.isEmpty ? 'Not set' : controller.text,
+              initialValue,
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w500,
@@ -306,3 +224,7 @@ class _ProfileHeaderTeacherState extends State<ProfileHeaderTeacher> {
     );
   }
 }
+
+  
+
+

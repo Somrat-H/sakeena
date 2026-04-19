@@ -10,4 +10,19 @@ class AppUrls {
   static String singUp = "/auth/users/";
 
 
+
+  //student
+  static String getStudentProfile ="/student-profiles/me/";
+
+
+
+  //teacher
+  static String getTeacherProfile ="/teacher-profiles/me" ;
+
+  static String updateTeacherProfile = "/teacher-profiles/";
+
+  static String getTeacherCourse = "/courses";
+  
+
+
 }

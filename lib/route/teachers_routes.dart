@@ -1,10 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:sakeena/features/guest/consultation_screen.dart';
-import 'package:sakeena/features/student/profile/profile_and_settings_screen.dart';
+import 'package:sakeena/features/student/profile/view/profile_and_settings_screen.dart';
 import 'package:sakeena/features/teachers/consultation_page/consultation_page.dart';
 import 'package:sakeena/features/teachers/earnings/earnings_screen.dart';
 import 'package:sakeena/features/teachers/landing_page/landing_page.dart';
-import 'package:sakeena/features/teachers/profile/profile_preview_screen.dart';
+import 'package:sakeena/features/teachers/profile/views/profile_preview_screen.dart';
 import 'package:sakeena/features/teachers/submission/presentation/screens/grade_submission_screen.dart';
 import 'package:sakeena/features/teachers/submission/presentation/screens/quiz_review_page.dart';
 import 'package:sakeena/features/teachers/submission/presentation/screens/submission_details_screen.dart';
@@ -12,10 +12,10 @@ import 'package:sakeena/features/teachers/submission/presentation/screens/submis
 import 'package:sakeena/features/teachers/upload_content/upload_content.dart';
 import 'package:sakeena/features/teachers/upload_content/upload_new_content.dart';
 import '../features/teachers/course_detail/course_detail_screen.dart';
-import '../features/teachers/courses/my_courses_screen.dart';
+import '../features/teachers/courses/view/my_courses_screen.dart';
 import '../features/teachers/create_course/create_course_screen.dart';
 import '../features/teachers/dashboard/dashboard_screen.dart';
-import '../features/teachers/profile/profile_screen.dart';
+import '../features/teachers/profile/views/profile_screen.dart';
 
 class TeachersRoutes {
   static const String dashboard = '/teachers/dashboard';

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:sakeena/features/teachers/profile/controller/teacher_profile_controller.dart';
 import 'package:sakeena/route/go_route.dart';
 import 'package:sakeena/route/teachers_routes.dart';
+import 'package:shimmer/shimmer.dart';
 
 class TeacherDrawerMenuItem {
   final String label;
@@ -67,6 +70,7 @@ class TeacherMenuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profileController = context.watch<TeacherProfileController>();
     return SafeArea(
       child: Drawer(
         backgroundColor: Colors.white,
@@ -112,14 +116,49 @@ class TeacherMenuDrawer extends StatelessWidget {
   }
 }
 
+Widget _buildHeaderShimmer(Color color) {
+  return Shimmer.fromColors(
+    baseColor: color.withOpacity(0.8),
+    highlightColor: color.withOpacity(0.5),
+    child: Container(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(24.w, 50.h, 24.w, 28.h),
+      color: color,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(radius: 38.r, backgroundColor: Colors.white),
+          SizedBox(height: 16.h),
+          Container(width: 150.w, height: 20.h, color: Colors.white),
+          SizedBox(height: 8.h),
+          Container(width: 80.w, height: 14.h, color: Colors.white),
+          SizedBox(height: 8.h),
+          Container(width: 180.w, height: 12.h, color: Colors.white),
+        ],
+      ),
+    ),
+  );
+}
 Widget _buildHeader(BuildContext context) {
-  final headerColor = const Color(0xFF2C7A7B);
+  const headerColor = Color(0xFF2C7A7B);
+  // Use watch to listen for changes (like when isLoading becomes false)
+  final profileProvider = context.watch<TeacherProfileController>();
+  final data = profileProvider.teacherProfileResponse;
+
+  // 1. Show Shimmer while loading
+  if (profileProvider.isLoading) {
+    return _buildHeaderShimmer(headerColor);
+  }
+
+  // 2. Safely extract values with null-coalescing
+  final String fullName = "${data.user!.firstName ?? 'Student'} ${data.user!.lastName ?? ''}".trim();
+  final String? profilePic = data.profilePicture;
+  final String email = data.user!.email ?? "No email provided";
 
   return Container(
     width: double.infinity,
-    padding: EdgeInsets.fromLTRB(24.w, 40.h, 24.w, 10.h),
+    padding: EdgeInsets.fromLTRB(24.w, 50.h, 24.w, 28.h),
     decoration: BoxDecoration(
-      color: headerColor,
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -129,33 +168,39 @@ Widget _buildHeader(BuildContext context) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Avatar
         CircleAvatar(
           radius: 38.r,
           backgroundColor: Colors.white24,
-          child: Icon(Icons.person, size: 44.sp, color: Colors.white70),
+          // Improved logic: check if null OR empty
+          backgroundImage: (profilePic != null && profilePic.isNotEmpty)
+              ? NetworkImage(profilePic)
+              : const NetworkImage("https://cdn-icons-png.flaticon.com/128/149/149071.png"),
         ),
-        SizedBox(height: 12.h),
-
-        // Name & Role
+        SizedBox(height: 16.h),
         Text(
-          'Zara',
+          fullName,
           style: TextStyle(
             color: Colors.white,
             fontSize: 20.sp,
             fontWeight: FontWeight.w600,
-            letterSpacing: 0.2,
           ),
         ),
         SizedBox(height: 4.h),
         Text(
-          'Lecturer',
+          'Student',
           style: TextStyle(color: Colors.white70, fontSize: 14.sp),
+        ),
+        SizedBox(height: 4.h),
+        Text(
+          email,
+          style: TextStyle(color: Colors.white60, fontSize: 13.sp),
         ),
       ],
     ),
   );
 }
+
+
 
 class _MenuTile extends StatelessWidget {
   final String label;

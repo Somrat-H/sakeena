@@ -94,6 +94,8 @@ class AppRoutes {
   static const profileSettingsPage = '/profile_settings_page';
   static const LiveCourseRegistrationScreen =
       '/live_course_registration_screen';
+      
+        static String teacherCourseDetails = '/teacher_course_details';
 }
 
 GoRouter createRouter() {
@@ -130,9 +132,14 @@ GoRouter createRouter() {
         path: AppRoutes.success,
         builder: (context, state) => const SuccessPage(),
       ),
+      // GoRoute(
+      //   path: AppRoutes.courseDetails,
+      //   builder: (context, state) => CourseDetailScreen(),
+      // ),
+
       GoRoute(
-        path: AppRoutes.courseDetails,
-        builder: (context, state) => CourseDetailScreen(),
+        path: AppRoutes.teacherCourseDetails,
+        builder: (context, state) => TeacherCourseDetails(),
       ),
       // GoRoute(
       //   path: AppRoutes.courseDetails,
@@ -275,7 +282,7 @@ GoRoute(
           ),
           GoRoute(
             path: AppRoutes.myCourseScreen,
-            builder: (context, state) => MyCourseScreen(),
+            builder: (context, state) => StudentCourseScreen(),
           ),
           GoRoute(
             path: AppRoutes.videoLibraryScreen,

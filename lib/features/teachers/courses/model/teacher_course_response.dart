@@ -1,7 +1,7 @@
 class TeacherCoruseResponse {
   int? count;
   int? totalPages;
-  int? next;
+  dynamic? next;
   int? previous;
   List<Results>? results;
 

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:sakeena/features/auth/controller/auth_controller.dart';
 import 'package:sakeena/route/go_route.dart';
-import 'package:sakeena/view_model/auth_view_model.dart';
 import 'package:sakeena/widgets/auth_background.dart';
 import 'package:sakeena/widgets/custom_button.dart';
 
@@ -32,11 +32,10 @@ class _OtpPageState extends State<OtpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthViewModel>(
-      builder: (context, auth, child) {
-        final email = auth.resetEmail ?? 'example@gmail.com';
+    final auth = context.watch<AuthControlle>();
+    final email = auth.resetEmail ?? 'example@gmail.com';
 
-        return Scaffold(
+    return Scaffold(
           resizeToAvoidBottomInset: false,
           body: AuthBackground(
             child: Padding(
@@ -177,7 +176,10 @@ class _OtpPageState extends State<OtpPage> {
             ),
           ),
         );
-      },
-    );
   }
-}
+    
+
+  }
+
+
+

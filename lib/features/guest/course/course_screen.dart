@@ -389,7 +389,7 @@ class _CoursesPageState extends State<CoursesPage> {
                 children: [
                   // Category Filter
                   FilterSection(
-                    title: 'Category',
+               
                     items: categories,
                     selectedItem: selectedCategory,
                     onSelected: (v) => setState(() => selectedCategory = v),
@@ -399,7 +399,7 @@ class _CoursesPageState extends State<CoursesPage> {
 
                   // Course Type Filter
                   FilterSection(
-                    title: 'Course Type',
+            
                     items: courseTypes,
                     selectedItem: selectedCourseType,
                     onSelected: (v) => setState(() => selectedCourseType = v),

@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sakeena/features/guest/consultation_screen.dart';
 import 'package:sakeena/features/student/profile/view/profile_and_settings_screen.dart';
 import 'package:sakeena/features/teachers/consultation_page/consultation_page.dart';
+import 'package:sakeena/features/teachers/content/upload_content/content_details_screen.dart';
 import 'package:sakeena/features/teachers/earnings/earnings_screen.dart';
 import 'package:sakeena/features/teachers/landing_page/landing_page.dart';
 import 'package:sakeena/features/teachers/profile/views/profile_preview_screen.dart';
@@ -9,12 +10,12 @@ import 'package:sakeena/features/teachers/submission/presentation/screens/grade_
 import 'package:sakeena/features/teachers/submission/presentation/screens/quiz_review_page.dart';
 import 'package:sakeena/features/teachers/submission/presentation/screens/submission_details_screen.dart';
 import 'package:sakeena/features/teachers/submission/presentation/screens/submission_management_page.dart';
-import 'package:sakeena/features/teachers/upload_content/upload_content.dart';
-import 'package:sakeena/features/teachers/upload_content/upload_new_content.dart';
-import '../features/teachers/course_detail/course_detail_screen.dart';
+import 'package:sakeena/features/teachers/content/upload_content/content_home.dart';
+import 'package:sakeena/features/teachers/content/upload_content/upload_new_content.dart';
+import '../features/teachers/course_detail/view/teacher_course_detail_screen.dart';
 import '../features/teachers/courses/view/my_courses_screen.dart';
 import '../features/teachers/create_course/create_course_screen.dart';
-import '../features/teachers/dashboard/dashboard_screen.dart';
+import '../features/teachers/dashboard/view/dashboard_screen.dart';
 import '../features/teachers/profile/views/profile_screen.dart';
 
 class TeachersRoutes {
@@ -34,6 +35,8 @@ class TeachersRoutes {
   static const String earnings = "/earnings";
   static const String settings = "/settings";
   static const String submissions = "/submissions";
+  
+  static String contentDetails = "/content-details";
 
   static List<RouteBase> getRoutes() {
     return [
@@ -54,12 +57,9 @@ class TeachersRoutes {
           ),
           GoRoute(
             path: uploadContent,
-            builder: (context, state) => const UploadContentHomePage(),
+            builder: (context, state) => const ContentHomePage(),
           ),
-          GoRoute(
-            path: uploadNewContent,
-            builder: (context, state) => const UploadNewContentPage(),
-          ),
+         
           GoRoute(
             path: earnings,
             builder: (context, state) => const EarningsScreen(),
@@ -81,12 +81,28 @@ class TeachersRoutes {
           ),
         ],
       ),
-
+     GoRoute(
+            path: uploadNewContent,
+            builder: (context, state) => const UploadContentScreen(),
+          ),
+          GoRoute(
+            path: contentDetails,
+            builder: (context, state) {
+              final slug = state.extra as String;
+              return BlogDetailsScreen(slug: slug);
+            },
+          ),
       GoRoute(
         path: dashboard,
         builder: (context, state) => const DashboardScreen(),
       ),
-
+     GoRoute(
+        path: courseDetail,
+        builder: (context, state) {
+          final id = state.extra as int;
+          return  TeacherCourseDetails(courseId: id,);
+        },
+      ),
       GoRoute(
         path: myCourses,
         builder: (context, state) => const MyCoursesScreen(),

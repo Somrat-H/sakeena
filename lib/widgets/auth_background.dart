@@ -18,7 +18,9 @@ class AuthBackground extends StatelessWidget {
         Positioned.fill(
           child: SvgPicture.asset(
             'assets/images/background.svg',
-            fit: BoxFit.cover,           // or BoxFit.fill / BoxFit.contain depending on your design
+            fit: BoxFit.cover,    
+           
+                   // or BoxFit.fill / BoxFit.contain depending on your design
             // Optional: color filter if you want to tint the background
             // colorFilter: ColorFilter.mode(
             //   Colors.black.withOpacity(0.15),

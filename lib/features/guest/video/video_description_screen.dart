@@ -83,7 +83,7 @@ class VideoDescriptionScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FilterSection(
-                      title: '',
+                
                       items: categories,
                       selectedItem: 'All',
                       onSelected: (value) {

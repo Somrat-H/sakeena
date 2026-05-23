@@ -154,6 +154,7 @@ Widget _buildHeader(BuildContext context) {
   final String fullName = "${data.user!.firstName ?? 'Student'} ${data.user!.lastName ?? ''}".trim();
   final String? profilePic = data.profilePicture;
   final String email = data.user!.email ?? "No email provided";
+  final String role = data.user!.role ?? "N/A";
 
   return Container(
     width: double.infinity,
@@ -187,7 +188,7 @@ Widget _buildHeader(BuildContext context) {
         ),
         SizedBox(height: 4.h),
         Text(
-          'Student',
+          role,
           style: TextStyle(color: Colors.white70, fontSize: 14.sp),
         ),
         SizedBox(height: 4.h),

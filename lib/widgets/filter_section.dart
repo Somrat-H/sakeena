@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class FilterSection extends StatelessWidget {
-  final String title;
+  
   final List<String> items;
   final String selectedItem;
   final Function(String) onSelected;
@@ -10,7 +10,7 @@ class FilterSection extends StatelessWidget {
 
   const FilterSection({
     super.key,
-    required this.title,
+ 
     required this.items,
     required this.selectedItem,
     required this.onSelected,
@@ -54,11 +54,7 @@ class FilterSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w600),
-        ),
-        SizedBox(height: 10.h),
+       
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(children: buttons),

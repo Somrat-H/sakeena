@@ -58,27 +58,18 @@ class _ProfileSettingsPageState extends State<ProfileSettingsPage>
         children: [
           Stack(
             children: [
-              CircleAvatar(
-                radius: 50.r,
-                // Logic to switch between local file and placeholder/network image
-                backgroundImage:
-                    context.read<ProfileController>().pickedImage != null
-                    ? FileImage(
-                            File(
-                              context
-                                  .read<ProfileController>()
-                                  .pickedImage!
-                                  .path,
-                            ),
-                          )
-                          as ImageProvider
-                    : NetworkImage(
-                        context
-                            .read<ProfileController>()
-                            .stundetProfileResponse
-                            .profilePicture!,
-                      ),
-              ),
+             CircleAvatar(
+  radius: 50, // ScreenUtil .r removed
+  backgroundImage: context.read<ProfileController>().pickedImage != null
+      ? FileImage(
+          File(context.read<ProfileController>().pickedImage!.path),
+        ) as ImageProvider
+      : NetworkImage(
+          // Safely fallback to a placeholder avatar if profilePicture is null
+          context.read<ProfileController>().stundetProfileResponse.profilePicture ?? 
+          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+        ),
+),
               Positioned(
                 bottom: 0,
                 right: 0,

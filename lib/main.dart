@@ -5,8 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/core/app_theme.dart';
 import 'package:sakeena/features/auth/controller/auth_controller.dart';
+import 'package:sakeena/features/student/course/provider/student_course_provider.dart';
+import 'package:sakeena/features/student/home/provider/student_dashboard_provider.dart';
 import 'package:sakeena/features/student/profile/controller/profile_controller.dart';
+import 'package:sakeena/features/teachers/content/controller/content_controller.dart';
+import 'package:sakeena/features/teachers/course_detail/controller/teacher_course_details_controller.dart';
 import 'package:sakeena/features/teachers/courses/controller/teacher_course_controller.dart';
+import 'package:sakeena/features/teachers/dashboard/controller/teacher_dashboard_controller.dart';
 import 'package:sakeena/features/teachers/profile/controller/teacher_profile_controller.dart';
 import 'package:sakeena/features/teachers/submission/presentation/providers/submission_provider.dart';
 import 'package:sakeena/route/go_route.dart'; // assuming this exports createRouter()
@@ -54,10 +59,18 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
               create: (_) => TeacherProfileController()..fetchTeacherProfile(),
             ),
-             ChangeNotifierProvider(
-              create: (_) => TeacherCourseController()..getCourseCategory()..getTeacherCourse(),
+            // ChangeNotifierProvider(
+            //   create: (_) => TeacherCourseController()..getCourseCategory()..getTeacherCourse(),
+            // ),
+            ChangeNotifierProvider(
+              create: (_) => StudentCourseProvider()..getCourseCategory()..getStudentCourse(),
             ),
             ChangeNotifierProvider(create: (_) => SubmissionProvider()),
+            ChangeNotifierProvider(create: (_) => TeacherDashboardController()),
+            ChangeNotifierProvider(create: (_)=> ContentController()..getContent()),
+              ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
+               ChangeNotifierProvider(create: (_) => TeacherCourseDetailsController()),
+            
           ],
           child: MaterialApp.router(
             title: 'Sakeena Institute',

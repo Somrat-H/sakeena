@@ -18,7 +18,7 @@ class CouseDeatilsResponse {
   String? status;
   String? startDate;
   bool? isActive;
-  Null? thumbnail;
+  String? thumbnail;
   String? previewVideo;
   List<RelatedCourses>? relatedCourses;
 
@@ -278,7 +278,7 @@ class Modules {
 class Lessons {
   int? id;
   QuizDetails? quizDetails;
-  AssignmentDetails? assignmentDetails;
+  // Null? assignmentDetails;
   bool? isAccessible;
   String? liveStatus;
   String? zoomStartUrl;
@@ -286,7 +286,7 @@ class Lessons {
   String? title;
   String? contentType;
   String? content;
-  Null? fileContent;
+  String? fileContent;
   String? videoContent;
   int? durationInMinutes;
   bool? isPreview;
@@ -297,13 +297,13 @@ class Lessons {
   String? scheduledAt;
   String? zoomMeetingId;
   String? zoomHostEmail;
-  Null? zoomJoinUrl;
+  String? zoomJoinUrl;
   int? module;
 
   Lessons(
       {this.id,
       this.quizDetails,
-      this.assignmentDetails,
+      // this.assignmentDetails,
       this.isAccessible,
       this.liveStatus,
       this.zoomStartUrl,
@@ -330,9 +330,7 @@ class Lessons {
     quizDetails = json['quiz_details'] != null
         ? new QuizDetails.fromJson(json['quiz_details'])
         : null;
-    assignmentDetails = json['assignment_details'] != null
-        ? new AssignmentDetails.fromJson(json['assignment_details'])
-        : null;
+    // assignmentDetails = json['assignment_details'] ?? null;
     isAccessible = json['is_accessible'];
     liveStatus = json['live_status'];
     zoomStartUrl = json['zoom_start_url'];
@@ -361,9 +359,7 @@ class Lessons {
     if (this.quizDetails != null) {
       data['quiz_details'] = this.quizDetails!.toJson();
     }
-    if (this.assignmentDetails != null) {
-      data['assignment_details'] = this.assignmentDetails!.toJson();
-    }
+    // data['assignment_details'] = this.assignmentDetails;
     data['is_accessible'] = this.isAccessible;
     data['live_status'] = this.liveStatus;
     data['zoom_start_url'] = this.zoomStartUrl;
@@ -488,51 +484,6 @@ class Options {
     data['text'] = this.text;
     data['is_correct'] = this.isCorrect;
     data['question'] = this.question;
-    return data;
-  }
-}
-
-class AssignmentDetails {
-  int? id;
-  String? description;
-  String? instructions;
-  String? dueDate;
-  int? maxPoints;
-  String? allowedFileTypes;
-  int? maxFileSize;
-  int? lesson;
-
-  AssignmentDetails(
-      {this.id,
-      this.description,
-      this.instructions,
-      this.dueDate,
-      this.maxPoints,
-      this.allowedFileTypes,
-      this.maxFileSize,
-      this.lesson});
-
-  AssignmentDetails.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    description = json['description'];
-    instructions = json['instructions'];
-    dueDate = json['due_date'];
-    maxPoints = json['max_points'];
-    allowedFileTypes = json['allowed_file_types'];
-    maxFileSize = json['max_file_size'];
-    lesson = json['lesson'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['description'] = this.description;
-    data['instructions'] = this.instructions;
-    data['due_date'] = this.dueDate;
-    data['max_points'] = this.maxPoints;
-    data['allowed_file_types'] = this.allowedFileTypes;
-    data['max_file_size'] = this.maxFileSize;
-    data['lesson'] = this.lesson;
     return data;
   }
 }

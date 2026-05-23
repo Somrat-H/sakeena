@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:sakeena/core/storage/token_manager.dart';
 import 'package:sakeena/features/teachers/courses/model/teacher_course_response.dart';
 import 'package:sakeena/features/teachers/courses/model/course_category_response.dart';
-import 'package:sakeena/features/teachers/courses/model/course_details_response.dart';
+import 'package:sakeena/features/teachers/course_detail/model/course_details_response.dart';
 import 'package:sakeena/network/api_service/api_service.dart';
 import 'package:sakeena/network/app_url/app_urls.dart';
 
@@ -27,8 +27,5 @@ class TeacherCouseRepository {
     }
   }
 
-  Future<CouseDeatilsResponse> getCourseDetails(int id)async{
-    final response = await _apiService.getData(AppUrls.getCourseDetails(id), authToken: await TokenStorage.getAccessToken());
-    return CouseDeatilsResponse.fromJson(response);
-  }
+
 }

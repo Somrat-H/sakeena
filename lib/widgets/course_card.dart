@@ -327,7 +327,7 @@ class CourseCardTeacher extends StatelessWidget {
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: AppTheme.successColor,
+                    color: status == 'upcoming' ?  AppTheme.successColor : status == 'running' ? Colors.red : status == "recorded" ? Colors.blue : Colors.grey,
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Text(

@@ -1,5 +1,5 @@
 class AppUrls {
-  static String baseUrl = "http://10.10.13.8:8000";
+  static String baseUrl = "https://api.sakeenapress.org";
 
   //auth
 
@@ -25,6 +25,12 @@ class AppUrls {
 
   static String getCourseCategory = "/course-categories";
 
+  static String getTeacherDashboard = "/teacher/dashboard/";
+
+  static String getStudentDashboard = "/student/dashboard/";
+
   static String getCourseDetails(int id) => "/courses/$id";
+
+
 
 }

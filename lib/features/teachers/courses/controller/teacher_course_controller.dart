@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sakeena/features/teachers/courses/model/teacher_course_response.dart';
 import 'package:sakeena/features/teachers/courses/model/course_category_response.dart';
-import 'package:sakeena/features/teachers/courses/model/course_details_response.dart';
+import 'package:sakeena/features/teachers/course_detail/model/course_details_response.dart';
 import 'package:sakeena/features/teachers/courses/repository/teacher_couse_repository.dart';
 
 class TeacherCourseController extends ChangeNotifier {
@@ -42,12 +42,5 @@ class TeacherCourseController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getCourseDetails(int id) async {
-    isLoading = true;
-    notifyListeners();
-    final response = await TeacherCouseRepository().getCourseDetails(id);
-    courseDetailsResponse = response;
-    isLoading = false;
-    notifyListeners();
-  }
+
 }

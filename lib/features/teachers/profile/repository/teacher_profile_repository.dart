@@ -11,6 +11,9 @@ class TeacherProfileRepository {
 
   Future<TeacherProfileResponse> getTeacherProfile()async{
     final response = await _apiService.getData(AppUrls.getTeacherProfile, authToken: await TokenStorage.getAccessToken());
+    if(kDebugMode){
+      debugPrint(response.toString());
+    }
     return TeacherProfileResponse.fromJson(response);
   }
 

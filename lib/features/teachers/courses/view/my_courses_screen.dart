@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:sakeena/features/teachers/course_detail/course_detail_screen.dart';
+import 'package:sakeena/features/teachers/course_detail/view/teacher_course_detail_screen.dart';
 import 'package:sakeena/features/teachers/courses/controller/teacher_course_controller.dart';
 import 'package:sakeena/features/teachers/courses/view/widget/course_shimmer_card.dart';
 import 'package:sakeena/features/teachers/courses/view/widget/category_shimmer_button.dart';
 import 'package:sakeena/route/go_route.dart';
+import 'package:sakeena/route/teachers_routes.dart';
 import 'package:sakeena/widgets/category_filter_button.dart';
 import 'package:sakeena/widgets/course_card.dart';
 import 'package:sakeena/widgets/custom_app_bar.dart';
@@ -125,7 +126,7 @@ class MyCoursesScreen extends StatelessWidget {
                           imageUrl:
                               course.thumbnail ??
                               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9ClZ-sWSzj1r9lMta57sD-X_zuxkbo_1kWw&s",
-                          category: course.category!.name!,
+                          category:  course.category == null ? 'Uncategorized' : course.category!.name!,
                           title: course.title!,
                           instructor:
                               "${course.teacher!.user!.firstName!} ${course.teacher!.user!.lastName}",
@@ -136,50 +137,14 @@ class MyCoursesScreen extends StatelessWidget {
                             course.hoursPerSession!,
                           ),
                           price: course.price!,
-                          status: course.category!.name!,
+                          status: course.status == null ? 'Uncategorized' : course.status!,
                           onViewDetails: () async{
-                            if (course.status == 'upcoming') {
-                              // Show popup dialog for Upcoming courses
-                              showDialog(
-                                context: context,
-                                builder: (_) => CourseDetailDialog(
-                                  course: CourseDetailModelOld(
-                                    courseTitle: course.title!,
-                                    instructor:
-                                        "${course.teacher!.user!.firstName!} ${course.teacher!.user!.lastName}",
-                                    category: course.category!.name!,
-                                    status: course.status!,
-                                    price: course.price!,
-                                    duration: '${course.durationInWeeks} weeks',
-                                    totalLessons: course.totalLessons!,
-                                    rating: 4.5,
-                                    totalEnrolled: 120,
-                                    students: [
-                                      {
-                                        'name': 'Emma Wilson',
-                                        'email': 'emma.w@email.com',
-                                      },
-                                      {
-                                        'name': 'Michael Chen',
-                                        'email': 'michael.c@email.com',
-                                      },
-                                      // Add more students dynamically
-                                    ],
-                                  ),
-                                ),
-                              );
-                            } else {
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (_) => const Center(child: CircularProgressIndicator()),
-                              );
-                              await controller.getCourseDetails(course.id!);
-                              if (context.mounted) {
+                            
+                         
                                 
-                                context.push(AppRoutes.courseDetails);
-                              }
-                            }
+                                context.push(TeachersRoutes.courseDetail,extra: course.id!);
+                              
+                            
                           },
 
                           // onViewDetails: () {

@@ -144,7 +144,7 @@ class _BooksPageState extends State<BooksPage> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: FilterSection(
-                title: 'Category',
+         
                 items: categories,
                 selectedItem: selectedCategory,
                 onSelected: (value) => setState(() => selectedCategory = value),

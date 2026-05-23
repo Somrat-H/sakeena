@@ -83,10 +83,10 @@ class CourseLessonItem {
   const CourseLessonItem({required this.title, required this.duration});
 }
 
-class CourseDetailScreen extends StatefulWidget {
+class TeacherCourseDetails extends StatefulWidget {
   final CourseData courseData;
 
-  const CourseDetailScreen({super.key, CourseData? courseData})
+  const TeacherCourseDetails({super.key, CourseData? courseData})
     : courseData =
           courseData ??
           const CourseData(
@@ -116,10 +116,10 @@ class CourseDetailScreen extends StatefulWidget {
           );
 
   @override
-  State<CourseDetailScreen> createState() => _CourseDetailScreenState();
+  State<TeacherCourseDetails> createState() => _TeacherCourseDetailsState();
 }
 
-class _CourseDetailScreenState extends State<CourseDetailScreen>
+class _TeacherCourseDetailsState extends State<TeacherCourseDetails>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   late List<bool> _expandedModules;

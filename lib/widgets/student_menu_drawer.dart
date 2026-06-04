@@ -28,37 +28,27 @@ final List<DrawerMenuItem> studentMenuItems = [
   DrawerMenuItem(
     label: 'Home',
     icon: Icons.home_outlined,
-    route: AppRoutes.studentHomeScreen,
+    route: AppRoutes.homeGuest,
   ),
   DrawerMenuItem(
     label: 'Courses',
     icon: Icons.school_outlined,
-    route: AppRoutes.myCourseScreen,
+    route: AppRoutes.courseGuest,
   ),
   DrawerMenuItem(
-    label: 'Class Joining',
-    icon: Icons.video_call_outlined,
-    route: AppRoutes.studentLiveClass,
-  ),
-  DrawerMenuItem(
-    label: 'Teachers',
+    label: 'Faculty',
     icon: Icons.people_outline,
-    route: AppRoutes.teachersScreenForStudent,
+    route: AppRoutes.facultyGuest,
   ),
   DrawerMenuItem(
     label: 'Book',
     icon: Icons.menu_book_outlined,
-    route: AppRoutes.booksPage,
+    route: AppRoutes.bookGuest,
   ),
   DrawerMenuItem(
     label: 'Blog',
     icon: Icons.article_outlined,
-    route: AppRoutes.blogScreen,
-  ),
-  DrawerMenuItem(
-    label: 'Mastery Bundle',
-    icon: Icons.article_outlined,
-    route: AppRoutes.subscription,
+    route: AppRoutes.bookGuest,
   ),
   DrawerMenuItem(
     label: 'Profile',
@@ -160,48 +150,83 @@ Widget _buildHeader(BuildContext context) {
   final String email = data.email ?? "No email provided";
 
   return Container(
-    width: double.infinity,
-    padding: EdgeInsets.fromLTRB(24.w, 50.h, 24.w, 28.h),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [headerColor, headerColor.withOpacity(0.85)],
-      ),
+  width: double.infinity,
+  padding: EdgeInsets.fromLTRB(24.w, 50.h, 24.w, 28.h),
+  decoration: BoxDecoration(
+    gradient: LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [headerColor, headerColor.withOpacity(0.85)],
     ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CircleAvatar(
-          radius: 38.r,
-          backgroundColor: Colors.white24,
-          // Improved logic: check if null OR empty
-          backgroundImage: (profilePic != null && profilePic.isNotEmpty)
-              ? NetworkImage(profilePic)
-              : const NetworkImage("https://cdn-icons-png.flaticon.com/128/149/149071.png"),
+  ),
+  // Added null-safe navigation (?.) to protect against uninitialized states safely
+  child: (profileProvider.stundetProfileResponse?.email ?? '').isEmpty  
+    ? Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // Prevents column from eating vertical layout room
+          children: [
+          
+            
+            // --- Custom Brand Login Button ---
+            SizedBox(
+              width: 160.w,
+              height: 40.h,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,      // Standout white container block
+                  foregroundColor: headerColor,        // Direct matching branding teal ink color
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.r), // Premium capsule look
+                  ),
+                ),
+                onPressed: () {
+                  context.push(AppRoutes.login);
+                },
+                child: Text(
+                  "Login Now",
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-        SizedBox(height: 16.h),
-        Text(
-          fullName,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.sp,
-            fontWeight: FontWeight.w600,
+      ) 
+    : Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 38.r,
+            backgroundColor: Colors.white24,
+            backgroundImage: (profilePic != null && profilePic.isNotEmpty)
+                ? NetworkImage(profilePic)
+                : const NetworkImage("https://cdn-icons-png.flaticon.com/128/149/149071.png"),
           ),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          'Student',
-          style: TextStyle(color: Colors.white70, fontSize: 14.sp),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          email,
-          style: TextStyle(color: Colors.white60, fontSize: 13.sp),
-        ),
-      ],
-    ),
-  );
+          SizedBox(height: 16.h),
+          Text(
+            fullName,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            'Student',
+            style: TextStyle(color: Colors.white70, fontSize: 14.sp),
+          ),
+          SizedBox(height: 4.h),
+          Text(
+            email,
+            style: TextStyle(color: Colors.white60, fontSize: 13.sp),
+          ),
+        ],
+      ),
+);
 }
 
 /// -----------------------------

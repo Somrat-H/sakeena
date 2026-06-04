@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:sakeena/features/guest/consultation_screen.dart';
 import 'package:sakeena/features/student/profile/view/profile_and_settings_screen.dart';
 import 'package:sakeena/features/teachers/consultation_page/consultation_page.dart';
 import 'package:sakeena/features/teachers/content/upload_content/content_details_screen.dart';
@@ -35,7 +34,7 @@ class TeachersRoutes {
   static const String earnings = "/earnings";
   static const String settings = "/settings";
   static const String submissions = "/submissions";
-  
+
   static String contentDetails = "/content-details";
 
   static List<RouteBase> getRoutes() {
@@ -59,7 +58,7 @@ class TeachersRoutes {
             path: uploadContent,
             builder: (context, state) => const ContentHomePage(),
           ),
-         
+
           GoRoute(
             path: earnings,
             builder: (context, state) => const EarningsScreen(),
@@ -81,26 +80,26 @@ class TeachersRoutes {
           ),
         ],
       ),
-     GoRoute(
-            path: uploadNewContent,
-            builder: (context, state) => const UploadContentScreen(),
-          ),
-          GoRoute(
-            path: contentDetails,
-            builder: (context, state) {
-              final slug = state.extra as String;
-              return BlogDetailsScreen(slug: slug);
-            },
-          ),
+      GoRoute(
+        path: uploadNewContent,
+        builder: (context, state) => const UploadContentScreen(),
+      ),
+      GoRoute(
+        path: contentDetails,
+        builder: (context, state) {
+          final slug = state.extra as String;
+          return BlogDetailsScreen(slug: slug);
+        },
+      ),
       GoRoute(
         path: dashboard,
         builder: (context, state) => const DashboardScreen(),
       ),
-     GoRoute(
+      GoRoute(
         path: courseDetail,
         builder: (context, state) {
           final id = state.extra as int;
-          return  TeacherCourseDetails(courseId: id,);
+          return TeacherCourseDetails(courseId: id);
         },
       ),
       GoRoute(
@@ -132,9 +131,10 @@ class TeachersRoutes {
             GradeSubmissionPage(submissionId: state.pathParameters['id']!),
       ),
       GoRoute(
-  path: '/submission/quiz-review/:id',
-  builder: (context, state) => QuizReviewPage(quizId: state.pathParameters['id']!),
-),
+        path: '/submission/quiz-review/:id',
+        builder: (context, state) =>
+            QuizReviewPage(quizId: state.pathParameters['id']!),
+      ),
     ];
   }
 

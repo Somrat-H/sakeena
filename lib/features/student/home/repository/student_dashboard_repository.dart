@@ -6,7 +6,7 @@ import 'package:sakeena/network/app_url/app_urls.dart';
 
 class StudentDashboardRepository {
 
-    final ApiService _apiService = ApiService();
+  final ApiService _apiService = ApiService();
   Future<StudentDashboardResponse> getStudentDashboard()async{
     final response = await _apiService.getData(AppUrls.getStudentDashboard, authToken: await TokenStorage.getAccessToken());
     if(kDebugMode){

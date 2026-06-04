@@ -1,4 +1,3 @@
-import 'package:sakeena/features/guest/course/course_details_screen.dart';
 import 'package:sakeena/model/quiz_question_model.dart';
 
 class CourseModule {
@@ -15,4 +14,10 @@ class CourseModule {
     this.quiz,
     this.assignmentDescription,
   });
+}
+class CourseLessonItem {
+  final String title;
+  final String duration;
+
+  const CourseLessonItem({required this.title, required this.duration});
 }

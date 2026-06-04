@@ -20,26 +20,31 @@ class BottomNavItem {
 }
 
 // 🔹 Guest bottom nav items
-const List<BottomNavItem> guestBottomNavItems = [
+ List<BottomNavItem> guestBottomNavItems = [
   BottomNavItem(
     label: 'Home',
     icon: Icons.home_outlined,
-    route: AppRoutes.guestHome,
+    route: AppRoutes.homeGuest,
   ),
   BottomNavItem(
     label: 'Courses',
-    svgPath: 'assets/icons/course_nav_icon.svg',
-    route: AppRoutes.coursesScreen,
+    svgPath: 'assets/icons/course-icon.svg',
+    route: AppRoutes.courseGuest,
   ),
   BottomNavItem(
-    label: 'Teachers',
-    svgPath: 'assets/icons/nav_icon_three.svg',
-    route: AppRoutes.teachersScreen,
+    label: 'Consultation',
+    svgPath: 'assets/icons/teacher-icon.svg',
+    route: AppRoutes.consultation,
   ),
   BottomNavItem(
-    label: 'About',
-    icon: Icons.info_outlined,
-    route: AppRoutes.aboutScreen,
+    label: 'Books',
+    svgPath: 'assets/icons/open-book.svg', 
+    route: AppRoutes.bookGuest,
+  ),
+    BottomNavItem(
+    label: 'Blogs',
+    svgPath: 'assets/icons/blog-icon.svg',
+    route: AppRoutes.blogsGuest,
   ),
   BottomNavItem(
     label: 'Menu',
@@ -61,14 +66,19 @@ const List<BottomNavItem> studentBottomNavItems = [
     route: AppRoutes.myCourseScreen,
   ),
   BottomNavItem(
-    label: 'Teachers',
+    label: 'Faculty',
     svgPath: 'assets/icons/nav_icon_three.svg',
     route: AppRoutes.teachersScreenForStudent,
   ),
   BottomNavItem(
-    label: 'Class',
-    svgPath: 'assets/icons/video_icon.svg',
+    label: 'Books',
+    svgPath: 'assets/icons/book_icon.svg',
     route: AppRoutes.studentLiveClass,
+  ),
+   BottomNavItem(
+    label: 'Blogs',
+    svgPath: 'assets/icons/blog.svg',
+    route: AppRoutes.blogsGuest,
   ),
   BottomNavItem(
     label: 'Menu',
@@ -76,7 +86,6 @@ const List<BottomNavItem> studentBottomNavItems = [
     isMenu: true,
   ),
 ];
-
 
 class CustomBottomNavBar extends StatelessWidget {
   final List<BottomNavItem> items;
@@ -94,7 +103,7 @@ class CustomBottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
         decoration: BoxDecoration(
           color: const Color(0xFFFFFBE7),
           boxShadow: [
@@ -110,11 +119,12 @@ class CustomBottomNavBar extends StatelessWidget {
           children: List.generate(items.length, (index) {
             final item = items[index];
             final isActive = index == currentIndex && !item.isMenu;
-
-            return _NavButton(
-              item: item,
-              isActive: isActive,
-              onTap: () => onTap(index),
+            return Expanded(
+              child: _NavButton(
+                item: item,
+                isActive: isActive,
+                onTap: () => onTap(index),
+              ),
             );
           }),
         ),
@@ -136,35 +146,46 @@ class _NavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Label configurations based on selection states
+    final textColor = isActive ? const Color(0xFF2C7A7B) : const Color(0xFF555555);
+    final fontWeight = isActive ? FontWeight.bold : FontWeight.w500;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeInOut,
-        padding: EdgeInsets.symmetric(
-          horizontal: isActive ? 16.w : 10.w,
-          vertical: 10.h,
-        ),
-        decoration: BoxDecoration(
-          color: isActive ? const Color(0xFF2C7A7B) : Colors.transparent,
-          borderRadius: BorderRadius.circular(30.r),
-        ),
-        child: Row(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 4.h),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildIcon(item, isActive),
-            if (isActive) ...[
-              SizedBox(width: 6.w),
-              Text(
-                item.label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 13.5.sp,
-                  fontWeight: FontWeight.w600,
-                ),
+            // Icon container layout
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 240),
+              curve: Curves.easeInOut,
+              padding: EdgeInsets.symmetric(
+                horizontal: 14.w,
+                vertical: 4.h,
               ),
-            ],
+              decoration: BoxDecoration(
+                // Creates a clean, dynamic background pill behind the icon when active
+                color: isActive ? const Color(0xFF2C7A7B).withOpacity(0.12) : Colors.transparent,
+                borderRadius: BorderRadius.circular(20.r),
+              ),
+              child: _buildIcon(item, isActive),
+            ),
+            SizedBox(height: 4.h),
+            // Text is permanently visible outside conditional barriers
+            Text(
+              item.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 11.sp,
+                fontWeight: fontWeight,
+              ),
+            ),
           ],
         ),
       ),
@@ -172,156 +193,17 @@ class _NavButton extends StatelessWidget {
   }
 
   Widget _buildIcon(BottomNavItem item, bool isActive) {
-    final color = isActive ? Colors.white : const Color(0xFF555555);
+    final color = isActive ? const Color(0xFF2C7A7B) : const Color(0xFF555555);
 
     if (item.icon != null) {
-      return Icon(item.icon, size: 24.sp, color: color);
+      return Icon(item.icon, size: 20.sp, color: color);
     }
 
     return SvgPicture.asset(
       item.svgPath!,
-      width: 24.sp,
-      height: 24.sp,
+      width: 20.sp,
+      height: 20.sp,
       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
     );
   }
 }
-
-class NavItem {
-  final String label;
-  final IconData? icon;
-  final String? svgPath;
-
-  const NavItem({required this.label, this.icon, this.svgPath})
-    : assert(
-        icon != null || svgPath != null,
-        'Either icon or svgPath must be provided',
-      );
-
-  bool get isMenu => label == 'Menu';
-}
-
-// 🔹 Student bottom nav items only
-const List<NavItem> studentNavItems = [
-  NavItem(label: 'Home', icon: Icons.home_outlined),
-  NavItem(label: 'Courses', svgPath: 'assets/icons/course_nav_icon.svg'),
-
-  // SVG icon example
-  NavItem(label: 'Teachers', svgPath: 'assets/icons/nav_icon_three.svg'),
-  NavItem(
-    label: 'Class',
-    svgPath: 'assets/icons/video_icon.svg',
-    // icon: Icons.video_call_outlined,
-  ),
-
-  NavItem(label: 'Menu', svgPath: 'assets/icons/menu_icon.svg'),
-];
-
-
-
-// class CustomBottomNavBar extends StatelessWidget {
-//   final int currentIndex;
-//   final ValueChanged<int> onTap;
-
-//   const CustomBottomNavBar({
-//     super.key,
-//     required this.currentIndex,
-//     required this.onTap,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Container(
-//         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-//         decoration: BoxDecoration(
-//           color: const Color(0xFFFFFBE7),
-//           boxShadow: [
-//             BoxShadow(
-//               color: Colors.black.withOpacity(0.06),
-//               blurRadius: 10,
-//               offset: const Offset(0, -2),
-//             ),
-//           ],
-//         ),
-//         child: Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//           children: List.generate(studentNavItems.length, (index) {
-//             final item = studentNavItems[index];
-//             final isActive = index == currentIndex && !item.isMenu;
-
-//             return _NavButton(
-//               item: item,
-//               isActive: isActive,
-//               onTap: () => onTap(index),
-//             );
-//           }),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class _NavButton extends StatelessWidget {
-//   final NavItem item;
-//   final bool isActive;
-//   final VoidCallback onTap;
-
-//   const _NavButton({
-//     required this.item,
-//     required this.isActive,
-//     required this.onTap,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return GestureDetector(
-//       behavior: HitTestBehavior.opaque,
-//       onTap: onTap,
-//       child: AnimatedContainer(
-//         duration: const Duration(milliseconds: 280),
-//         curve: Curves.easeInOut,
-//         padding: EdgeInsets.symmetric(
-//           horizontal: isActive ? 16.w : 10.w,
-//           vertical: 10.h,
-//         ),
-//         decoration: BoxDecoration(
-//           color: isActive ? const Color(0xFF2C7A7B) : Colors.transparent,
-//           borderRadius: BorderRadius.circular(30.r),
-//         ),
-//         child: Row(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             _buildIcon(item, isActive),
-//             if (isActive) ...[
-//               SizedBox(width: 6.w),
-//               Text(
-//                 item.label,
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 13.5.sp,
-//                   fontWeight: FontWeight.w600,
-//                 ),
-//               ),
-//             ],
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildIcon(NavItem item, bool isActive) {
-//     final color = isActive ? Colors.white : const Color(0xFF555555);
-
-//     if (item.icon != null) {
-//       return Icon(item.icon, size: 24.sp, color: color);
-//     }
-
-//     return SvgPicture.asset(
-//       item.svgPath!,
-//       width: 24.sp,
-//       height: 24.sp,
-//       colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-//     );
-//   }
-// }

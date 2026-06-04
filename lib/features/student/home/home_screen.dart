@@ -137,7 +137,9 @@ class StudentHomeScreen extends StatelessWidget {
                             ),
                           ),
                           12.verticalSpace,
-                          SessionConsultationCard(
+                         controller
+                                .studentDashboardResponse
+                                .upcomingSessions!.isEmpty ? SizedBox() :  SessionConsultationCard(
                             teacherName: controller
                                 .studentDashboardResponse
                                 .upcomingSessions!
@@ -167,7 +169,8 @@ class StudentHomeScreen extends StatelessWidget {
                             },
                           ),
                           12.verticalSpace,
-                          NextLiveClassCard(
+                        controller
+                                .studentDashboardResponse.nextLiveClass == null ? SizedBox() :  NextLiveClassCard(
                             title: 'Next Live Class',
                             courseName: controller
                                 .studentDashboardResponse

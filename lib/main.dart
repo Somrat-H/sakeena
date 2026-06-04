@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/core/app_theme.dart';
 import 'package:sakeena/features/auth/controller/auth_controller.dart';
+import 'package:sakeena/features/guest_portion/home/provider/guest_navbar_provider.dart';
+import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart';
 import 'package:sakeena/features/student/course/provider/student_course_provider.dart';
 import 'package:sakeena/features/student/home/provider/student_dashboard_provider.dart';
 import 'package:sakeena/features/student/profile/controller/profile_controller.dart';
@@ -51,10 +53,11 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MultiProvider(
           providers: [
+             ChangeNotifierProvider(create: (_) => GuestNavProvider()),
             ChangeNotifierProvider(create: (_) => UserProvider()),
             ChangeNotifierProvider(create: (_) => AuthControlle()),
             ChangeNotifierProvider(
-              create: (_) => ProfileController()..fetchStudentProfile(),
+              create: (_) => ProfileController(),
             ),
             ChangeNotifierProvider(
               create: (_) => TeacherProfileController()..fetchTeacherProfile(),
@@ -70,6 +73,10 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_)=> ContentController()..getContent()),
               ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
                ChangeNotifierProvider(create: (_) => TeacherCourseDetailsController()),
+
+
+            //guest
+                ChangeNotifierProvider(create: (_) => HomeGuestProvider())
             
           ],
           child: MaterialApp.router(

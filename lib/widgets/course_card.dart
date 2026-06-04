@@ -16,7 +16,7 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 240.w,
+      width: 220.w,
       margin: EdgeInsets.only(right: 16.w),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -281,8 +281,8 @@ class CourseCardTeacher extends StatelessWidget {
                     child: Image.network(
                       imageUrl,
                       height: 180.h,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+                      // width: double.infinity,
+                      fit: BoxFit.fill,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
                           height: 180.h,
@@ -294,28 +294,28 @@ class CourseCardTeacher extends StatelessWidget {
                       },
                     ),
                   ),
-                  Positioned(
-                    top: 12.h,
-                    right: 12.w,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEBEBEB),
-                        borderRadius: BorderRadius.circular(16.r),
-                      ),
-                      child: Text(
-                        category,
-                        style: TextStyle(
-                          fontSize: 11.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Positioned(
+                  //   top: 12.h,
+                  //   right: 12.w,
+                  //   child: Container(
+                  //     padding: EdgeInsets.symmetric(
+                  //       horizontal: 12.w,
+                  //       vertical: 6.h,
+                  //     ),
+                  //     decoration: BoxDecoration(
+                  //       color: const Color(0xFFEBEBEB),
+                  //       borderRadius: BorderRadius.circular(16.r),
+                  //     ),
+                  //     child: Text(
+                  //       category,
+                  //       style: TextStyle(
+                  //         fontSize: 11.sp,
+                  //         fontWeight: FontWeight.w600,
+                  //         color: Colors.black,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               // Status Badge
@@ -327,7 +327,13 @@ class CourseCardTeacher extends StatelessWidget {
                     vertical: 6.h,
                   ),
                   decoration: BoxDecoration(
-                    color: status == 'upcoming' ?  AppTheme.successColor : status == 'running' ? Colors.red : status == "recorded" ? Colors.blue : Colors.grey,
+                    color: status == 'upcoming'
+                        ? AppTheme.successColor
+                        : status == 'running'
+                        ? Colors.red
+                        : status == "recorded"
+                        ? Colors.blue
+                        : Colors.grey,
                     borderRadius: BorderRadius.circular(20.r),
                   ),
                   child: Text(
@@ -490,18 +496,39 @@ class CourseCardTeacher extends StatelessWidget {
                             color: AppTheme.primaryColor,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: onViewDetails, // optional, extra clickable
-                          child: Container(
-                            padding: EdgeInsets.all(8.w),
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(8.r),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(
+                              0xFF317773,
+                            ), // Brand teal color matching the UI asset
+                            foregroundColor:
+                                Colors.white, // Crisp white text color
+                            elevation: 0, // Flat styling layout design
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
                             ),
-                            child: Icon(
-                              Icons.remove_red_eye_outlined,
-                              size: 18.sp,
-                              color: Colors.grey.shade700,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                8,
+                              ), // Subtle soft border radius corner cut
+                            ),
+                          ),
+                          onPressed: () {
+                            // Add your navigation or initialization path logic here
+                          },
+                          child: Text(
+                            status == "upcoming"
+                                ? "Join waitlist"
+                                : status == "recorded"
+                                ? "Start Learning"
+                                : status == "running"
+                                ? "Join Class"
+                                : "N/A",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.2,
                             ),
                           ),
                         ),

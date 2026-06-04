@@ -15,7 +15,6 @@ class AppUrls {
   static String getStudentProfile ="/student-profiles/me/";
 
 
-
   //teacher
   static String getTeacherProfile ="/teacher-profiles/me" ;
 
@@ -31,6 +30,6 @@ class AppUrls {
 
   static String getCourseDetails(int id) => "/courses/$id";
 
-
+   static String getCourseReview(int id) => "/courses/$id/reviews/";
 
 }

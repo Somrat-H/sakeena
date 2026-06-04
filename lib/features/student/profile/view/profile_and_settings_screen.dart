@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sakeena/core/storage/token_manager.dart';
 import 'package:sakeena/features/student/profile/controller/profile_controller.dart';
 import 'package:sakeena/route/go_route.dart';
 import 'package:sakeena/widgets/custom_app_bar.dart';
@@ -520,7 +521,13 @@ Widget _imageSourceOption({
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () => context.go(AppRoutes.login),
+            onPressed: () async{
+             await TokenStorage.clear();
+             if(context.mounted){
+               context.go(AppRoutes.login);
+             }
+             
+            },
             child: Text('Logout', style: TextStyle(color: Colors.red.shade600)),
           ),
         ],

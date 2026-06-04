@@ -415,18 +415,18 @@ class CounselorPreviewPage extends StatelessWidget {
 
                     SizedBox(height: 16.h),
 
-                    SizedBox(
-                      height: 400.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.only(left: 16.w),
-                        itemCount: courses.length,
-                        itemBuilder: (context, index) {
-                          final course = courses[index];
-                          return CourseCard(course: CourseData.mock());
-                        },
-                      ),
-                    ),
+                    // SizedBox(
+                    //   height: 400.h,
+                    //   child: ListView.builder(
+                    //     scrollDirection: Axis.horizontal,
+                    //     padding: EdgeInsets.only(left: 16.w),
+                    //     itemCount: courses.length,
+                    //     itemBuilder: (context, index) {
+                    //       final course = courses[index];
+                    //       return CourseCard(course: CourseData.mock());
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

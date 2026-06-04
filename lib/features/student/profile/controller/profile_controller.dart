@@ -2,11 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sakeena/core/storage/token_manager.dart';
 import 'package:sakeena/features/student/profile/model/student_profile_response.dart';
 import 'package:sakeena/features/student/profile/repository/student_profile_repository.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends ChangeNotifier {
+
+ void init()async {
+  if(TokenStorage.getAccessToken() != null){
+      await fetchStudentProfile();
+  }
+  }
+
   StundeProfileResponse stundetProfileResponse = StundeProfileResponse();
   bool isLoading = false;
 

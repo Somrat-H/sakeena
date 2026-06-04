@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 // Auth
 import 'package:sakeena/features/auth/auth_screens/forgot_password_page.dart';
@@ -8,27 +9,38 @@ import 'package:sakeena/features/auth/auth_screens/otp_page.dart';
 import 'package:sakeena/features/auth/auth_screens/reset_password_page.dart';
 import 'package:sakeena/features/auth/auth_screens/sign_up_screen.dart';
 import 'package:sakeena/features/auth/auth_screens/splash_screen.dart';
-import 'package:sakeena/features/auth/auth_screens/success_page.dart'; 
+import 'package:sakeena/features/auth/auth_screens/success_page.dart';
+import 'package:sakeena/features/guest_portion/blogs/blogs_guest_screen.dart';
+import 'package:sakeena/features/guest_portion/book/books_guest_screen.dart';
+import 'package:sakeena/features/guest_portion/consultation/consultation_guest_screen.dart';
+import 'package:sakeena/features/guest_portion/course/course_guest_screen.dart';
+import 'package:sakeena/features/guest_portion/faculty/faculty_guest_screen.dart';
+import 'package:sakeena/features/guest_portion/home/model/faculty_details_model.dart';
+import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart';
+import 'package:sakeena/features/guest_portion/home/view/books/books_details_page.dart';
+import 'package:sakeena/features/guest_portion/home/view/books/widget/online_pdf_view_page.dart';
+import 'package:sakeena/features/guest_portion/home/view/books/widget/online_video_player_page.dart';
+import 'package:sakeena/features/guest_portion/home/view/guest_home_page.dart';
 
 // Guest
-import 'package:sakeena/features/guest/about/about_screen.dart';
-import 'package:sakeena/features/guest/blog/blog_details_screen.dart';
-import 'package:sakeena/features/guest/blog/blog_screen.dart';
-import 'package:sakeena/features/guest/books/book_details_screen.dart';
-import 'package:sakeena/features/guest/books/books_screen.dart';
-import 'package:sakeena/features/guest/books/pdf_viewer_screen.dart';
-import 'package:sakeena/features/guest/books/video_player_screen';
-import 'package:sakeena/features/guest/consultation_screen.dart';
-import 'package:sakeena/features/guest/contact/contact_screen.dart';
-import 'package:sakeena/features/guest/course/course_details_screen.dart';
-import 'package:sakeena/features/guest/course/course_screen.dart';
-import 'package:sakeena/features/guest/course/live_course_registration_screen.dart';
-import 'package:sakeena/features/guest/home_screen.dart';
-import 'package:sakeena/features/guest/support/support_screen.dart';
-import 'package:sakeena/features/guest/teachers/teacher_details_screen.dart';
-import 'package:sakeena/features/guest/teachers/teachers_screen.dart';
-import 'package:sakeena/features/guest/video/video_description_screen.dart';
-import 'package:sakeena/features/guest/video/video_library_screen.dart';
+// import 'package:sakeena/features/guest/about/about_screen.dart';
+// import 'package:sakeena/features/guest/blog/blog_details_screen.dart';
+// import 'package:sakeena/features/guest/blog/blog_screen.dart';
+// import 'package:sakeena/features/guest/books/book_details_screen.dart';
+// import 'package:sakeena/features/guest/books/books_screen.dart';
+// import 'package:sakeena/features/guest/books/pdf_viewer_screen.dart';
+// import 'package:sakeena/features/guest/books/video_player_screen';
+// import 'package:sakeena/features/guest/consultation_screen.dart';
+// import 'package:sakeena/features/guest/contact/contact_screen.dart';
+// import 'package:sakeena/features/guest/course/course_details_screen.dart';
+// import 'package:sakeena/features/guest/course/course_screen.dart';
+// import 'package:sakeena/features/guest/course/live_course_registration_screen.dart';
+// import 'package:sakeena/features/guest/home_screen.dart';
+// import 'package:sakeena/features/guest/support/support_screen.dart';
+// import 'package:sakeena/features/guest/teachers/teacher_details_screen.dart';
+// import 'package:sakeena/features/guest/teachers/teachers_screen.dart';
+// import 'package:sakeena/features/guest/video/video_description_screen.dart';
+// import 'package:sakeena/features/guest/video/video_library_screen.dart';
 
 // Student
 import 'package:sakeena/features/student/course/my_course_screen.dart';
@@ -44,11 +56,13 @@ import 'package:sakeena/features/student/teachers/teachers_screen.dart';
 import 'package:sakeena/features/subscription/checkout/checkout_details_page.dart';
 import 'package:sakeena/features/subscription/checkout/checkout_payment_page.dart';
 import 'package:sakeena/features/subscription/checkout/checkout_success_page.dart';
-import 'package:sakeena/features/subscription/subscription_screen.dart';
-import 'package:sakeena/features/teachers/submission/presentation/screens/submission_management_page.dart';
-import 'package:sakeena/route/guest_shell_route.dart';
+
+import 'package:sakeena/route/guest_shell.dart';
 import 'package:sakeena/route/shell_route_for_student.dart';
 import 'package:sakeena/route/teachers_routes.dart';
+
+import '../features/guest_portion/consultation/consultation_details_guest_screen.dart' hide HomeGuestProvider;
+import '../features/guest_portion/home/view/blog/blog_details_page.dart';
 
 class AppRoutes {
   static const splash = '/';
@@ -59,7 +73,7 @@ class AppRoutes {
   static const reset = '/reset';
   static const success = '/success';
 
-  static const guestHome = '/guest_home';
+  // static const guestHome = '/guest_home';
   static const howItWorks = '/how_it_works';
   static const subscription = '/subscription';
   static const coursesScreen = '/courses_screen'; // WITH navbar
@@ -77,7 +91,7 @@ class AppRoutes {
 
   static const aboutScreen = '/about';
   static const blogScreen = '/blog_screen';
-  static const blogDetailsScreen = '/blog/:id';
+  static const blogDetails = '/blog';
   static const videoLibraryScreen = '/video_library_screen';
   static const videoDescriptionScreen = '/video_description_screen';
   static const supportScreen = '/support_screen';
@@ -94,8 +108,25 @@ class AppRoutes {
   static const profileSettingsPage = '/profile_settings_page';
   static const LiveCourseRegistrationScreen =
       '/live_course_registration_screen';
-      
-        static String teacherCourseDetails = '/teacher_course_details';
+
+  static String teacherCourseDetails = '/teacher_course_details';
+
+  //guest portion
+
+  static const homeGuest = "/guest-home";
+  static const courseGuest = "/guest-course";
+  static const bookGuest = "/guest-books";
+  static const blogsGuest = "/guest-blogs";
+  static const facultyGuest = "/guest-faculty";
+
+  static String bookDetails = "/book-details";
+
+  static String onlinePdfView = "/online-pdf-view";
+  static String onlineVideoView = "/online-video-view";
+  
+  static String consultation = "/consultation";
+  
+  static String consultationDetails = "/consultation-details";
 }
 
 GoRouter createRouter() {
@@ -137,29 +168,29 @@ GoRouter createRouter() {
       //   builder: (context, state) => CourseDetailScreen(),
       // ),
 
-      GoRoute(
-        path: AppRoutes.teacherCourseDetails,
-        builder: (context, state) => TeacherCourseDetails(),
-      ),
       // GoRoute(
-      //   path: AppRoutes.courseDetails,
-      //   builder: (context, state) => const CourseDetailsPage(),
+      //   path: AppRoutes.teacherCourseDetails,
+      //   builder: (context, state) => TeacherCourseDetails(),
       // ),
-      GoRoute(
-        path: '${AppRoutes.teacherDetails}/:id',
-        builder: (context, state) {
-          final id = state.pathParameters['id'] ?? '1';
-          return CounselorDetailPage(counselorId: id);
-        },
-      ),
+      // // GoRoute(
+      // //   path: AppRoutes.courseDetails,
+      // //   builder: (context, state) => const CourseDetailsPage(),
+      // // ),
+      // GoRoute(
+      //   path: '${AppRoutes.teacherDetails}/:id',
+      //   builder: (context, state) {
+      //     final id = state.pathParameters['id'] ?? '1';
+      //     return CounselorDetailPage(counselorId: id);
+      //   },
+      // ),
 
-      GoRoute(
-        path: '/book_details/:id',
-        builder: (context, state) {
-          final id = state.pathParameters['id'] ?? '1';
-          return BookDetailsPage(bookId: id);
-        },
-      ),
+      // GoRoute(
+      //   path: '/book_details/:id',
+      //   builder: (context, state) {
+      //     final id = state.pathParameters['id'] ?? '1';
+      //     return BookDetailsPage(bookId: id);
+      //   },
+      // ),
       GoRoute(
         path: AppRoutes.checkoutSuccess,
         builder: (context, state) => const CheckoutSuccessPage(),
@@ -172,103 +203,102 @@ GoRouter createRouter() {
         path: AppRoutes.checkoutPayment,
         builder: (context, state) => const CheckoutPaymentPage(),
       ),
-      GoRoute(
-        path: AppRoutes.videoDescriptionScreen,
-        builder: (context, state) => const VideoDescriptionScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.booksPage,
-        builder: (context, state) => BooksPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.LiveCourseRegistrationScreen,
-        builder: (context, state) => const LiveCourseRegistrationPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.blogScreen,
-        builder: (context, state) => const BlogScreen(),
-      ),
-      GoRoute(
-        path: AppRoutes.blogDetailsScreen,
-        builder: (context, state) => const BlogDetailsPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.coursesStandalone,
-        builder: (context, state) => const CoursesPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.subscription,
-        builder: (context, state) => const SubscriptionPage(),
-      ),
-      GoRoute(
-  path: AppRoutes.booksPdf,
-  name: 'pdfViewer',
-  builder: (context, state) {
-    final extra = state.extra as Map<String, dynamic>? ?? {};
-    return PDFViewerPage(
-      title: extra['title'] ?? 'Book',
-      pdfPath: extra['pdfPath'] ?? 'assets/documents/default.pdf',
-    );
-  },
-),
-GoRoute(
-  path: AppRoutes.booksVideo,
-  name: 'videoPlayer',
-  builder: (context, state) {
-    final extra = state.extra as Map<String, dynamic>? ?? {};
-    return VideoPlayerPage(
-      title: extra['title'] ?? 'Book',
-      videoPath: extra['videoPath'] ?? 'assets/videos/default.mp4',
-    );
-  },
-),
-
+      // GoRoute(
+      //   path: AppRoutes.videoDescriptionScreen,
+      //   builder: (context, state) => const VideoDescriptionScreen(),
+      // ),
+      // GoRoute(
+      //   path: AppRoutes.booksPage,
+      //   builder: (context, state) => BooksPage(),
+      // ),
+      // GoRoute(
+      //   path: AppRoutes.LiveCourseRegistrationScreen,
+      //   builder: (context, state) => const LiveCourseRegistrationPage(),
+      // ),
+      // GoRoute(
+      //   path: AppRoutes.blogScreen,
+      //   builder: (context, state) => const BlogScreen(),
+      // ),
+      // GoRoute(
+      //   path: AppRoutes.blogDetailsScreen,
+      //   builder: (context, state) => const BlogDetailsPage(),
+      // ),
+      // GoRoute(
+      //   path: AppRoutes.coursesStandalone,
+      //   builder: (context, state) => const CoursesPage(),
+      // ),
+      //       GoRoute(
+      //         path: AppRoutes.subscription,
+      //         builder: (context, state) => const SubscriptionPage(),
+      //       ),
+      //       GoRoute(
+      //   path: AppRoutes.booksPdf,
+      //   name: 'pdfViewer',
+      //   builder: (context, state) {
+      //     final extra = state.extra as Map<String, dynamic>? ?? {};
+      //     return PDFViewerPage(
+      //       title: extra['title'] ?? 'Book',
+      //       pdfPath: extra['pdfPath'] ?? 'assets/documents/default.pdf',
+      //     );
+      //   },
+      // ),
+      // GoRoute(
+      //   path: AppRoutes.booksVideo,
+      //   name: 'videoPlayer',
+      //   builder: (context, state) {
+      //     final extra = state.extra as Map<String, dynamic>? ?? {};
+      //     return VideoPlayerPage(
+      //       title: extra['title'] ?? 'Book',
+      //       videoPath: extra['videoPath'] ?? 'assets/videos/default.mp4',
+      //     );
+      //   },
+      // ),
 
       /// GUEST SHELL (GLOBAL BOTTOM NAV + DRAWER)
-      ShellRoute(
-        builder: (context, state, child) {
-          return GuestShell(child: child);
-        },
-        routes: [
-          GoRoute(
-            path: AppRoutes.guestHome,
-            builder: (context, state) => const GuestHomeScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.howItWorks,
-            builder: (context, state) => const ConsultationScreen(),
-          ),
+      // ShellRoute(
+      //   builder: (context, state, child) {
+      //     return GuestShell(child: child);
+      //   },
+      //   routes: [
+      //     GoRoute(
+      //       path: AppRoutes.homeGuest,
+      //       builder: (context, state) => const Home(),
+      //     ),
+      //     GoRoute(
+      //       path: AppRoutes.howItWorks,
+      //       builder: (context, state) => const ConsultationScreen(),
+      //     ),
 
-          GoRoute(
-            path: AppRoutes.coursesScreen,
-            builder: (context, state) => const CoursesPage(),
-          ),
+      //     GoRoute(
+      //       path: AppRoutes.coursesScreen,
+      //       builder: (context, state) => const CoursesPage(),
+      //     ),
 
-          GoRoute(
-            path: AppRoutes.teachersScreen,
-            builder: (context, state) => const TeachersScreen(),
-          ),
+      //     GoRoute(
+      //       path: AppRoutes.teachersScreen,
+      //       builder: (context, state) => const TeachersScreen(),
+      //     ),
 
-          GoRoute(
-            path: AppRoutes.aboutScreen,
-            builder: (context, state) => const AboutScreen(),
-          ),
+      //     GoRoute(
+      //       path: AppRoutes.aboutScreen,
+      //       builder: (context, state) => const AboutScreen(),
+      //     ),
 
-          GoRoute(
-            path: AppRoutes.videoLibraryScreen,
-            builder: (context, state) => const VideoLibraryScreen(),
-          ),
+      //     GoRoute(
+      //       path: AppRoutes.videoLibraryScreen,
+      //       builder: (context, state) => const VideoLibraryScreen(),
+      //     ),
 
-          GoRoute(
-            path: AppRoutes.supportScreen,
-            builder: (context, state) => const SupportScreen(),
-          ),
-          GoRoute(
-            path: AppRoutes.contactScreen,
-            builder: (context, state) => ContactScreen(),
-          ),
-        ],
-      ),
+      //     GoRoute(
+      //       path: AppRoutes.supportScreen,
+      //       builder: (context, state) => const SupportScreen(),
+      //     ),
+      //     GoRoute(
+      //       path: AppRoutes.contactScreen,
+      //       builder: (context, state) => ContactScreen(),
+      //     ),
+      //   ],
+      // ),
 
       /// STUDENT SHELL (GLOBAL BOTTOM NAV + DRAWER)
       ShellRoute(
@@ -284,10 +314,10 @@ GoRoute(
             path: AppRoutes.myCourseScreen,
             builder: (context, state) => StudentCourseScreen(),
           ),
-          GoRoute(
-            path: AppRoutes.videoLibraryScreen,
-            builder: (context, state) => const VideoLibraryScreen(),
-          ),
+          // GoRoute(
+          //   path: AppRoutes.videoLibraryScreen,
+          //   builder: (context, state) => const VideoLibraryScreen(),
+          // ),
           GoRoute(
             path: AppRoutes.teachersScreenForStudent,
             builder: (context, state) => TeachersScreenForStudent(),
@@ -314,6 +344,106 @@ GoRoute(
           ),
         ],
       ),
+
+      //guest view
+      ShellRoute(
+        builder: (context, state, child) {
+          return GuestShell(child: child);
+        },
+        routes: [
+          GoRoute(
+            path: AppRoutes.homeGuest,
+            builder: (context, state) => GuestHomePage(),
+          ),
+          GoRoute(
+            path: AppRoutes.courseGuest,
+            builder: (context, state) => CourseGuestScreen(),
+          ),
+
+
+           GoRoute(
+        path: AppRoutes.consultation,
+        builder: (context, state) =>  ConsultationGuestScreen(),
+      ),
+          GoRoute(
+            path: AppRoutes.bookGuest,
+            builder: (context, state) => BooksGuestScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.blogsGuest,
+            builder: (context, state) => BlogsGuestScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.studentProfilePage,
+            builder: (context, state) => ProfileScreen(),
+          ),
+          GoRoute(
+            path: AppRoutes.privacyPolicyPage,
+            builder: (context, state) => PrivacyPolicyPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.termsAndConditionsPage,
+            builder: (context, state) => TermsAndConditionsPage(),
+          ),
+          GoRoute(
+            path: AppRoutes.profileSettingsPage,
+            builder: (context, state) => ProfileSettingsPage(),
+          ),
+        ],
+      ),
+
+        GoRoute(
+            path: AppRoutes.facultyGuest,
+            builder: (context, state) => FacultyGuestScreen(),
+          ),
+     
+      GoRoute(
+        path: AppRoutes.bookDetails,
+        builder: (context, state) {
+          final slug = state.extra.toString();
+          return BookDetailsScreen(slug: slug);
+        },
+      ),
+       GoRoute(
+        path: AppRoutes.consultationDetails,
+        builder: (context, state) {
+          final slug = state.extra.toString();
+          return ConsultantDetailsScreen();
+        },
+      ),
+      GoRoute(
+        path: '/pdf-viewer',
+        name: AppRoutes.onlinePdfView,
+        builder: (context, state) {
+          // Read parameters safely from the location state query parameters
+          final url = state.uri.queryParameters['url'] ?? '';
+          final title = state.uri.queryParameters['title'] ?? 'Document Sample';
+          return OnlinePdfViewerPage(pdfUrl: url, title: title);
+        },
+      ),
+      GoRoute(
+        path: '/video-player',
+        name: AppRoutes.onlineVideoView,
+        builder: (context, state) {
+          final url = state.uri.queryParameters['url'] ?? '';
+          final title = state.uri.queryParameters['title'] ?? 'Video Preview';
+          return OnlineVideoPlayerPage(videoUrl: url, title: title);
+        },
+      ),
+      GoRoute(
+      path: AppRoutes.blogDetails,
+      name: 'blogDetails',
+      builder: (context, state) {
+        final slug = state.extra.toString();
+    
+    // Call the network API data load process directly before initializing rendering steps
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeGuestProvider>().getBlogDetails(slug);
+    });
+
+    return BlogDetailsScreen(slug: slug);
+  },
+),
       // Teachers route defined in #teachers_routes.dart
       ...TeachersRoutes.getRoutes(),
     ],

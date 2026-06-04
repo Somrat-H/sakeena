@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sakeena/features/guest_portion/home/model/doors_model.dart';
 import 'package:sakeena/features/guest_portion/home/view/widget/doors_widget.dart';
+import 'package:sakeena/network/app_url/app_urls.dart';
+import 'package:sakeena/route/go_route.dart';
+import 'package:sakeena/route/teachers_routes.dart';
 
 
 class HealingDoorsCarouselSection extends StatefulWidget {
@@ -30,6 +34,11 @@ class _HealingDoorsCarouselSectionState extends State<HealingDoorsCarouselSectio
       curve: Curves.easeInOut,
     );
   }
+
+  String extractId(String value) {
+  // Matches and extracts only consecutive numeric sequences from the text
+  return RegExp(r'\d+').stringMatch(value) ?? '';
+}
 
   @override
   void dispose() {
@@ -84,7 +93,7 @@ class _HealingDoorsCarouselSectionState extends State<HealingDoorsCarouselSectio
                 child: DoorCard(
                   door: widget.doors[index],
                   onTap: () {
-                    // Route to dynamic healing module path screen
+                    context.push(TeachersRoutes.courseDetail,extra: int.parse(extractId (widget.doors[index].redirectLink.toString())));
                   },
                 ),
               );

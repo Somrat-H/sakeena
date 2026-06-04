@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/features/guest_portion/home/model/faculty_details_model.dart';
-import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart'; 
+import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart';
 
 class ConsultantDetailsScreen extends StatelessWidget {
   const ConsultantDetailsScreen({super.key});
@@ -21,7 +21,11 @@ class ConsultantDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           "Consultant Profile",
-          style: TextStyle(color: textPrimary, fontSize: 16.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: textPrimary,
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         foregroundColor: textPrimary,
         backgroundColor: Colors.white,
@@ -34,83 +38,84 @@ class ConsultantDetailsScreen extends StatelessWidget {
       ),
       // 1. Handle Loading State directly from Provider boolean flag
       body: provider.isDetailsLaoding
+          ? const Center(child: CircularProgressIndicator(color: tealBrand))
+          // 2. Handle Empty or Missing Object Payload Bound Guards
+          : (provider.consultationMemberDeatils == null ||
+                provider.consultationMemberDeatils!.id == null)
           ? const Center(
-              child: CircularProgressIndicator(
-                color: tealBrand,
+              child: Padding(
+                padding: EdgeInsets.all(24.0),
+                child: Text(
+                  "Profile data is currently unavailable. Please verify connection bounds and retry.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Color(0xFF64748B), fontSize: 14.0),
+                ),
               ),
             )
-          // 2. Handle Empty or Missing Object Payload Bound Guards
-          : (provider.consultationMemberDeatils == null || provider.consultationMemberDeatils!.id == null)
-              ? const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(24.0),
-                    child: Text(
-                      "Profile data is currently unavailable. Please verify connection bounds and retry.",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xFF64748B), fontSize: 14.0),
-                    ),
+          // 3. Render Profile Content flawlessly with normal scrolling physics
+          : SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // --- 1. PROFILE HEADER CARD ---
+                  _buildProfileHeaderCard(
+                    provider.consultationMemberDeatils!,
+                    tealBrand,
+                    textPrimary,
+                    const Color(0xFF64748B),
                   ),
-                )
-              // 3. Render Profile Content flawlessly with normal scrolling physics
-              : SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // --- 1. PROFILE HEADER CARD ---
-                      _buildProfileHeaderCard(
-                        provider.consultationMemberDeatils!,
-                        tealBrand,
-                        textPrimary,
-                        const Color(0xFF64748B),
-                      ),
-                      const SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
 
-                      // --- 2. RESPONSIVE ABOUT & ACHIEVEMENTS GRID ---
-                      LayoutBuilder(
-                        builder: (context, constraints) {
-                          if (constraints.maxWidth > 750) {
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: _buildAboutCard(
-                                    provider.consultationMemberDeatils!,
-                                    textPrimary,
-                                    const Color(0xFF64748B),
-                                  ),
-                                ),
-                                const SizedBox(width: 20.0),
-                                Expanded(
-                                  flex: 2,
-                                  child: _buildAchievementsCard(textPrimary),
-                                ),
-                              ],
-                            );
-                          } else {
-                            return Column(
-                              children: [
-                                _buildAboutCard(
-                                  provider.consultationMemberDeatils!,
-                                  textPrimary,
-                                  const Color(0xFF64748B),
-                                ),
-                                const SizedBox(height: 20.0),
-                                _buildAchievementsCard(textPrimary),
-                              ],
-                            );
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 20.0),
-
-                      // --- 3. EDUCATION TIMELINE TRACK CARD ---
-                      _buildEducationCard(provider.consultationMemberDeatils!, textPrimary, tealBrand),
-                    ],
+                  // --- 2. RESPONSIVE ABOUT & ACHIEVEMENTS GRID ---
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      if (constraints.maxWidth > 750) {
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 3,
+                              child: _buildAboutCard(
+                                provider.consultationMemberDeatils!,
+                                textPrimary,
+                                const Color(0xFF64748B),
+                              ),
+                            ),
+                            const SizedBox(width: 20.0),
+                            Expanded(
+                              flex: 2,
+                              child: _buildAchievementsCard(textPrimary),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            _buildAboutCard(
+                              provider.consultationMemberDeatils!,
+                              textPrimary,
+                              const Color(0xFF64748B),
+                            ),
+                            const SizedBox(height: 20.0),
+                            _buildAchievementsCard(textPrimary),
+                          ],
+                        );
+                      }
+                    },
                   ),
-                ),
+                  const SizedBox(height: 20.0),
+
+                  // --- 3. EDUCATION TIMELINE TRACK CARD ---
+                  _buildEducationCard(
+                    provider.consultationMemberDeatils!,
+                    textPrimary,
+                    tealBrand,
+                  ),
+                ],
+              ),
+            ),
     );
   }
 
@@ -127,10 +132,12 @@ class ConsultantDetailsScreen extends StatelessWidget {
     final String firstName = data.user?.firstName ?? "";
     final String lastName = data.user?.lastName ?? "";
     final String combinedName = "$firstName $lastName".trim();
-    final String finalDisplayName = combinedName.isNotEmpty ? combinedName : "Consultant Profile";
+    final String finalDisplayName = combinedName.isNotEmpty
+        ? combinedName
+        : "Consultant Profile";
 
-    final String initialLetter = finalDisplayName.isNotEmpty 
-        ? finalDisplayName.substring(0, 1).toUpperCase() 
+    final String initialLetter = finalDisplayName.isNotEmpty
+        ? finalDisplayName.substring(0, 1).toUpperCase()
         : "U";
 
     return Container(
@@ -157,21 +164,32 @@ class ConsultantDetailsScreen extends StatelessWidget {
                   CircleAvatar(
                     radius: 45.0,
                     backgroundColor: const Color(0xFFE2E8F0),
-                    backgroundImage: (data.profilePicture != null && data.profilePicture!.isNotEmpty)
+                    backgroundImage:
+                        (data.profilePicture != null &&
+                            data.profilePicture!.isNotEmpty)
                         ? NetworkImage(data.profilePicture!)
                         : null,
-                    child: (data.profilePicture == null || data.profilePicture!.isEmpty)
+                    child:
+                        (data.profilePicture == null ||
+                            data.profilePicture!.isEmpty)
                         ? Text(
                             initialLetter,
-                            style: TextStyle(color: textSecondary, fontSize: 28.0, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 28.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           )
                         : null,
                   ),
                   Positioned(
-                    top: 2,
-                    right: 2,
+                    top: 0,
+                    right: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 3.0),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 3.0,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFE6F4EA),
                         borderRadius: BorderRadius.circular(12.0),
@@ -183,17 +201,24 @@ class ConsultantDetailsScreen extends StatelessWidget {
                           Container(
                             width: 6.0,
                             height: 6.0,
-                            decoration: const BoxDecoration(color: Color(0xFF137333), shape: BoxShape.circle),
+                            decoration: const BoxDecoration(
+                              color: Color(0xFF137333),
+                              shape: BoxShape.circle,
+                            ),
                           ),
                           const SizedBox(width: 4.0),
                           const Text(
                             "Available",
-                            style: TextStyle(color: Color(0xFF137333), fontSize: 10.0, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Color(0xFF137333),
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(width: 20.0),
@@ -203,12 +228,21 @@ class ConsultantDetailsScreen extends StatelessWidget {
                   children: [
                     Text(
                       finalDisplayName,
-                      style: TextStyle(color: textPrimary, fontSize: 22.0, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: textPrimary,
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 6.0),
                     Text(
                       data.professionalTitle ?? "Consultant Specialist",
-                      style: TextStyle(color: textSecondary, fontSize: 13.0, height: 1.3, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        color: textSecondary,
+                        fontSize: 13.0,
+                        height: 1.3,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     const SizedBox(height: 12.0),
                     Wrap(
@@ -218,30 +252,60 @@ class ConsultantDetailsScreen extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.mail_outline, size: 16.0, color: textSecondary),
+                            Icon(
+                              Icons.mail_outline,
+                              size: 16.0,
+                              color: textSecondary,
+                            ),
                             const SizedBox(width: 6.0),
                             Text(
                               data.user?.email ?? "info@consultant.com",
-                              style: TextStyle(color: textSecondary, fontSize: 13.0, fontWeight: FontWeight.w400),
+                              style: TextStyle(
+                                color: textSecondary,
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ],
                         ),
+                        // Wrap this specific component inside a Flexible to let the outer Wrap layout handle it safely
                         Row(
-                          mainAxisSize: MainAxisSize.min,
+                          // mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment
+                              .start, // Align to top if text breaks into 2 lines
                           children: [
-                            Icon(Icons.location_on_outlined, size: 16.0, color: textSecondary),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: 2.0,
+                              ), // Keeps icon balanced with line-height
+                              child: Icon(
+                                Icons.location_on_outlined,
+                                size: 16.0,
+                                color: textSecondary,
+                              ),
+                            ),
                             const SizedBox(width: 4.0),
-                            Text(
-                              data.location ?? "Global Presence",
-                              style: TextStyle(color: textSecondary, fontSize: 13.0, fontWeight: FontWeight.w400),
+                            Flexible(
+                              child: Text(
+                                data.location ?? "Global Presence",
+                                maxLines: 2,
+                                overflow: TextOverflow
+                                    .ellipsis, // Elegantly clips if it exceeds 2 lines
+                                style: TextStyle(
+                                  color: textSecondary,
+                                  fontSize: 10.0,
+                                  fontWeight: FontWeight.w400,
+                                  // Clean line spacing for multi-line blocks
+                                ),
+                              ),
                             ),
                           ],
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
           ElevatedButton(
@@ -251,20 +315,29 @@ class ConsultantDetailsScreen extends StatelessWidget {
               foregroundColor: Colors.white,
               disabledBackgroundColor: Colors.grey.shade300,
               elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 14.0),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 14.0,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
             ),
             child: const Text(
               "One-to-one Counselling",
               style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildAboutCard(FacultyDetailsModel data, Color textPrimary, Color textSecondary) {
+  Widget _buildAboutCard(
+    FacultyDetailsModel data,
+    Color textPrimary,
+    Color textSecondary,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24.0),
@@ -276,11 +349,24 @@ class ConsultantDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("About", style: TextStyle(color: textPrimary, fontSize: 18.0, fontWeight: FontWeight.bold)),
+          Text(
+            "About",
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 14.0),
           Text(
-            data.about ?? "No structural description profile has been documented.",
-            style: TextStyle(color: textSecondary, fontSize: 13.5, height: 1.6, fontWeight: FontWeight.w400),
+            data.about ??
+                "No structural description profile has been documented.",
+            style: TextStyle(
+              color: textSecondary,
+              fontSize: 13.5,
+              height: 1.6,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ],
       ),
@@ -299,14 +385,25 @@ class ConsultantDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Achievements", style: TextStyle(color: textPrimary, fontSize: 18.0, fontWeight: FontWeight.bold)),
+          Text(
+            "Achievements",
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 80.0),
         ],
       ),
     );
   }
 
-  Widget _buildEducationCard(FacultyDetailsModel data, Color textPrimary, Color tealBrand) {
+  Widget _buildEducationCard(
+    FacultyDetailsModel data,
+    Color textPrimary,
+    Color tealBrand,
+  ) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24.0),
@@ -318,7 +415,14 @@ class ConsultantDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Education", style: TextStyle(color: textPrimary, fontSize: 18.0, fontWeight: FontWeight.bold)),
+          Text(
+            "Education",
+            style: TextStyle(
+              color: textPrimary,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 20.0),
           _buildEducationItemRow(
             tealBrand: tealBrand,

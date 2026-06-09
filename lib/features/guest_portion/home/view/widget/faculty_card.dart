@@ -29,7 +29,7 @@ class FacultyCard extends StatelessWidget {
 
     return Container(
       width: 240, // Perfect card horizontal track width layout budget
-      height: 380, // Enforces strict alignment limits for horizontal rows
+      height: 280, // Enforces strict alignment limits for horizontal rows
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: Colors.white,

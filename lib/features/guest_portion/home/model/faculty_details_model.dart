@@ -6,10 +6,10 @@ class FacultyDetailsModel {
   String? location;
   String? about;
   String? education;
-  // List<Null>? achievements;
+  List<String>? achievements;
   String? consultationRate;
   bool? offersConsultations;
-  // List<Null>? courses;
+  List<Courses>? courses;
   List<Consultations>? consultations;
 
   FacultyDetailsModel(
@@ -20,10 +20,10 @@ class FacultyDetailsModel {
       this.location,
       this.about,
       this.education,
-      // this.achievements,
+      this.achievements,
       this.consultationRate,
       this.offersConsultations,
-      // this.courses,
+      this.courses,
       this.consultations});
 
   FacultyDetailsModel.fromJson(Map<String, dynamic> json) {
@@ -34,20 +34,15 @@ class FacultyDetailsModel {
     location = json['location'];
     about = json['about'];
     education = json['education'];
-    // if (json['achievements'] != null) {
-    //   achievements = <Null>[];
-    //   json['achievements'].forEach((v) {
-    //     achievements!.add(new Null.fromJson(v));
-    //   });
-    // }
+    achievements = json['achievements'].cast<String>() ?? [];
     consultationRate = json['consultation_rate'];
     offersConsultations = json['offers_consultations'];
-    // if (json['courses'] != null) {
-    //   courses = <Null>[];
-    //   json['courses'].forEach((v) {
-    //     courses!.add(new Null.fromJson(v));
-    //   });
-    // }
+   if (json['courses'] != null) {
+      courses = <Courses>[];
+      json['courses'].forEach((v) {
+        courses!.add(new Courses.fromJson(v));
+      });
+    }
     if (json['consultations'] != null) {
       consultations = <Consultations>[];
       json['consultations'].forEach((v) {
@@ -67,14 +62,12 @@ class FacultyDetailsModel {
     data['location'] = this.location;
     data['about'] = this.about;
     data['education'] = this.education;
-    // if (this.achievements != null) {
-    //   data['achievements'] = this.achievements!.map((v) => v.toJson()).toList();
-    // }
+    data['achievements'] = this.achievements;
     data['consultation_rate'] = this.consultationRate;
     data['offers_consultations'] = this.offersConsultations;
-    // if (this.courses != null) {
-    //   data['courses'] = this.courses!.map((v) => v.toJson()).toList();
-    // }
+     if (this.courses != null) {
+      data['courses'] = this.courses!.map((v) => v.toJson()).toList();
+    }
     if (this.consultations != null) {
       data['consultations'] =
           this.consultations!.map((v) => v.toJson()).toList();
@@ -385,6 +378,70 @@ class RecurringRules {
     data['session_duration_minutes'] = this.sessionDurationMinutes;
     data['valid_from'] = this.validFrom;
     data['valid_until'] = this.validUntil;
+    return data;
+  }
+}
+class Courses {
+  int? id;
+  String? title;
+  String? slug;
+  String? thumbnail;
+  String? price;
+  String? level;
+  bool? isActive;
+  String? totalHours;
+  int? durationInWeeks;
+  int? totalWeeks;
+  String? hoursPerSession;
+  int? totalLessons;
+  String? status;
+
+  Courses(
+      {this.id,
+      this.title,
+      this.slug,
+      this.thumbnail,
+      this.price,
+      this.level,
+      this.isActive,
+      this.totalHours,
+      this.durationInWeeks,
+      this.totalWeeks,
+      this.hoursPerSession,
+      this.totalLessons,
+      this.status});
+
+  Courses.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    title = json['title'];
+    slug = json['slug'];
+    thumbnail = json['thumbnail'];
+    price = json['price'];
+    level = json['level'];
+    isActive = json['is_active'];
+    totalHours = json['total_hours'];
+    durationInWeeks = json['duration_in_weeks'];
+    totalWeeks = json['total_weeks'];
+    hoursPerSession = json['hours_per_session'];
+    totalLessons = json['total_lessons'];
+    status = json['status'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['slug'] = this.slug;
+    data['thumbnail'] = this.thumbnail;
+    data['price'] = this.price;
+    data['level'] = this.level;
+    data['is_active'] = this.isActive;
+    data['total_hours'] = this.totalHours;
+    data['duration_in_weeks'] = this.durationInWeeks;
+    data['total_weeks'] = this.totalWeeks;
+    data['hours_per_session'] = this.hoursPerSession;
+    data['total_lessons'] = this.totalLessons;
+    data['status'] = this.status;
     return data;
   }
 }

@@ -15,6 +15,7 @@ import 'package:sakeena/features/teachers/course_detail/view/widget/write_review
 import 'package:sakeena/features/teachers/earnings/earnings_screen.dart';
 import 'package:sakeena/route/teachers_routes.dart';
 import 'package:sakeena/widgets/course_card.dart';
+import 'package:sakeena/widgets/custom_snackbar.dart';
 import 'package:sakeena/widgets/stat_box.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -32,15 +33,16 @@ class TeacherCourseDetails extends StatelessWidget {
         appBar: AppBar(title: const Text("Course Details"), elevation: 0),
         body: FutureBuilder<CouseDeatilsResponse?>(
           // We must explicitly return the value 'courseData' at the end of the chain!
-          future: TeacherCourseDetailsRepository().getCourseDetails(courseId).then((courseData) {
+          future: TeacherCourseDetailsRepository().getCourseDetails(courseId).then((
+            courseData,
+          ) {
             // Trigger the provider review call in the background frame lifecycle
             if (courseData.id != null) {
-              if(context.mounted){
-                 context.read<HomeGuestProvider>().getCourseReview(courseId);
+              if (context.mounted) {
+                context.read<HomeGuestProvider>().getCourseReview(courseId);
               }
-             
             }
-            return courseData; 
+            return courseData;
           }),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -58,177 +60,176 @@ class TeacherCourseDetails extends StatelessWidget {
   }
 }
 
-  Widget _buildMainContent(BuildContext context, CouseDeatilsResponse course) {
-    // Matching your custom UI teal color scheme
-    const Color tealColor = Color(0xFF2C7A7B);
+Widget _buildMainContent(BuildContext context, CouseDeatilsResponse course) {
+  // Matching your custom UI teal color scheme
+  const Color tealColor = Color(0xFF2C7A7B);
 
-    
+  return Column(
+    children: [
+      Expanded(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // --- Title & Banner ---
+              _buildCourseHeader(context, course),
+              const SizedBox(height: 20),
 
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // --- Title & Banner ---
-                _buildCourseHeader(context, course),
-                const SizedBox(height: 20),
+              // --- Instructor ---
+              _buildTeacherTile(course.teacher),
+              const SizedBox(height: 16),
 
-                // --- Instructor ---
-                _buildTeacherTile(course.teacher),
-                const SizedBox(height: 16),
+              _buildCourseDetailsCard(course),
 
-                _buildCourseDetailsCard(course),
+              const SizedBox(height: 20),
 
-                const SizedBox(height: 20),
+              // --- Tab Bar ---
+              TabBar(
+                isScrollable: true,
+                labelColor: const Color(0xFF00796B),
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: const Color(0xFF00796B),
+                indicatorSize: TabBarIndicatorSize.tab,
+                physics:
+                    const BouncingScrollPhysics(), // Added for clean horizontal scrolling
+                tabs: [
+                  _buildRowTab(
+                    text: "Course Curriculum",
+                    iconAsset: "assets/icons/open-book.svg",
+                  ),
+                  _buildRowTab(
+                    text: "Course Overview",
+                    iconAsset: "assets/icons/open-book.svg",
+                  ),
+                  _buildRowTab(
+                    text: "Reviews",
+                    iconAsset: "assets/icons/open-book.svg",
+                  ),
+                  _buildRowTab(
+                    text: "Certificate",
+                    iconAsset: "assets/icons/open-book.svg",
+                  ),
+                  _buildRowTab(
+                    text: "Scholarship",
+                    iconAsset: "assets/icons/open-book.svg",
+                  ),
+                ],
+              ),
 
-                // --- Tab Bar ---
-                TabBar(
-                  isScrollable: true,
-                  labelColor: const Color(0xFF00796B),
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: const Color(0xFF00796B),
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  physics:
-                      const BouncingScrollPhysics(), // Added for clean horizontal scrolling
-                  tabs: [
-                    _buildRowTab(
-                      text: "Course Curriculum",
-                      iconAsset: "assets/icons/open-book.svg",
-                    ),
-                    _buildRowTab(
-                      text: "Course Overview",
-                      iconAsset: "assets/icons/open-book.svg",
-                    ),
-                    _buildRowTab(
-                      text: "Reviews",
-                      iconAsset: "assets/icons/open-book.svg",
-                    ),
-                    _buildRowTab(
-                      text: "Certificate",
-                      iconAsset: "assets/icons/open-book.svg",
-                    ),
-                    _buildRowTab(
-                      text: "Scholarship",
-                      iconAsset: "assets/icons/open-book.svg",
-                    ),
-                  ],
-                ),
+              const SizedBox(height: 20),
 
-                const SizedBox(height: 20),
-       
-                    const SizedBox(height: 20),
-                _buildTabContent( context.watch<HomeGuestProvider>(), course),
-                    
-                    // const SizedBox(height: 20),
-                    //          Text("Related Courses", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    //   child: SizedBox(
-                    //     height: 535,
-                    //     child: ListView.builder(
-                    //       scrollDirection: Axis.horizontal,
-                    //       physics: const BouncingScrollPhysics(),
-                    //       itemCount: course.relatedCourses?.length ?? 0,
-                    //       itemBuilder: (context, index) {
-                    //         final data = course.relatedCourses![index];
-                    //         return Padding(
-                    //           padding: const EdgeInsets.only(
-                    //             left: 16.0,
-                    //             right: 4.0,
-                    //           ),
-                    //           child: SizedBox(
-                    //             width: 350,
-                    //             child: Column(
-                    //               mainAxisSize: MainAxisSize.min,
-                    //               children: [
-                    //                 Expanded(
-                    //                   child: CourseCardTeacher(
-                    //                     imageUrl:
-                    //                         data.thumbnail ??
-                    //                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9ClZ-sWSzj1r9lMta57sD-X_zuxkbo_1kWw&s",
-                    //                     category: data.category == null
-                    //                         ? 'Uncategorized'
-                    //                         : data.category!.name ??
-                    //                               'Uncategorized',
-                    //                     title:
-                    //                         data.title ?? 'Untitled Course',
-                    //                     instructor:
-                    //                         "${data.teacher?.user?.firstName ?? ''} ${data.teacher?.user?.lastName ?? ''}",
-                    //                     lessons: data.totalLessons ?? 0,
-                    //                     weeks: data.durationInWeeks ?? 0,
-                    //                     totalHours:
-                    //                         double.tryParse(
-                    //                           data.totalHours ?? '0',
-                    //                         ) ??
-                    //                         0.0,
-                    //                     hoursPerSession:
-                    //                         double.tryParse(
-                    //                           data.hoursPerSession ?? '0',
-                    //                         ) ??
-                    //                         0.0,
-                    //                     price: course.price ?? "0.0",
-                    //                     status:
-                    //                         course.status ?? 'Uncategorized',
-                    //                     onViewDetails: () async {
-                    //                       if (course.id != null) {
-                    //                         context.push(
-                    //                           TeachersRoutes.courseDetail,
-                    //                           extra: data.id,
-                    //                         );
-                    //                       }
-                    //                     },
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         );
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
-              
-              
-              ],
-            ),
+              const SizedBox(height: 20),
+              _buildTabContent(context.watch<HomeGuestProvider>(), course),
+
+              // const SizedBox(height: 20),
+              //          Text("Related Courses", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(vertical: 8.0),
+              //   child: SizedBox(
+              //     height: 535,
+              //     child: ListView.builder(
+              //       scrollDirection: Axis.horizontal,
+              //       physics: const BouncingScrollPhysics(),
+              //       itemCount: course.relatedCourses?.length ?? 0,
+              //       itemBuilder: (context, index) {
+              //         final data = course.relatedCourses![index];
+              //         return Padding(
+              //           padding: const EdgeInsets.only(
+              //             left: 16.0,
+              //             right: 4.0,
+              //           ),
+              //           child: SizedBox(
+              //             width: 350,
+              //             child: Column(
+              //               mainAxisSize: MainAxisSize.min,
+              //               children: [
+              //                 Expanded(
+              //                   child: CourseCardTeacher(
+              //                     imageUrl:
+              //                         data.thumbnail ??
+              //                         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9ClZ-sWSzj1r9lMta57sD-X_zuxkbo_1kWw&s",
+              //                     category: data.category == null
+              //                         ? 'Uncategorized'
+              //                         : data.category!.name ??
+              //                               'Uncategorized',
+              //                     title:
+              //                         data.title ?? 'Untitled Course',
+              //                     instructor:
+              //                         "${data.teacher?.user?.firstName ?? ''} ${data.teacher?.user?.lastName ?? ''}",
+              //                     lessons: data.totalLessons ?? 0,
+              //                     weeks: data.durationInWeeks ?? 0,
+              //                     totalHours:
+              //                         double.tryParse(
+              //                           data.totalHours ?? '0',
+              //                         ) ??
+              //                         0.0,
+              //                     hoursPerSession:
+              //                         double.tryParse(
+              //                           data.hoursPerSession ?? '0',
+              //                         ) ??
+              //                         0.0,
+              //                     price: course.price ?? "0.0",
+              //                     status:
+              //                         course.status ?? 'Uncategorized',
+              //                     onViewDetails: () async {
+              //                       if (course.id != null) {
+              //                         context.push(
+              //                           TeachersRoutes.courseDetail,
+              //                           extra: data.id,
+              //                         );
+              //                       }
+              //                     },
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
+            ],
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildRowTab({required String text, required String iconAsset}) {
-    return Tab(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SvgPicture.asset(
-            iconAsset,
-            height: 18.0,
-            width: 18.0,
-            // Colors the asset vector dynamically based on the current active tab accent color
-            theme: const SvgTheme(currentColor: Colors.transparent),
-          ),
-          const SizedBox(
-            width: 8.0,
-          ), // Consistent horizontal spacing between icon and text
-          Text(
-            text,
-            style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
-          ),
-        ],
       ),
-    );
-  }
+    ],
+  );
+}
 
-  // Helper to switch content based on the active tab
-  // Since we are in a StatelessWidget and using DefaultTabController,
-  // you can either use a TabBarView (requires fixed height) or a custom Builder.
-Widget _buildTabContent(HomeGuestProvider provider, CouseDeatilsResponse course) {
+Widget _buildRowTab({required String text, required String iconAsset}) {
+  return Tab(
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          iconAsset,
+          height: 18.0,
+          width: 18.0,
+          // Colors the asset vector dynamically based on the current active tab accent color
+          theme: const SvgTheme(currentColor: Colors.transparent),
+        ),
+        const SizedBox(
+          width: 8.0,
+        ), // Consistent horizontal spacing between icon and text
+        Text(
+          text,
+          style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w600),
+        ),
+      ],
+    ),
+  );
+}
+
+// Helper to switch content based on the active tab
+// Since we are in a StatelessWidget and using DefaultTabController,
+// you can either use a TabBarView (requires fixed height) or a custom Builder.
+Widget _buildTabContent(
+  HomeGuestProvider provider,
+  CouseDeatilsResponse course,
+) {
   return Builder(
     builder: (context) {
       final tabController = DefaultTabController.of(context);
@@ -236,7 +237,7 @@ Widget _buildTabContent(HomeGuestProvider provider, CouseDeatilsResponse course)
         animation: tabController,
         builder: (context, child) {
           final currentIndex = tabController.index;
-          
+
           // 👈 Guard rail: If index drifts beyond bounds during rapid navigation changes, return fallback immediately
           if (currentIndex >= tabController.length) {
             return const SizedBox.shrink();
@@ -248,7 +249,11 @@ Widget _buildTabContent(HomeGuestProvider provider, CouseDeatilsResponse course)
             case 1:
               return _overviewSection(course);
             case 2:
-              return _buildStudentReviewsCard(context, course, provider.courseReviewModel);
+              return _buildStudentReviewsCard(
+                context,
+                course,
+                provider.courseReviewModel,
+              );
             case 3:
               return _buildCertificateLockedCard(context);
             case 4:
@@ -262,34 +267,33 @@ Widget _buildTabContent(HomeGuestProvider provider, CouseDeatilsResponse course)
   );
 }
 
-  Widget _overviewSection(CouseDeatilsResponse course) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade200),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            course.title ?? "",
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            course.subtitle ?? "",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
+Widget _overviewSection(CouseDeatilsResponse course) {
+  return Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey.shade200),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          course.title ?? "",
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          course.subtitle ?? "",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 8),
 
-          Html(data: course.description ?? "<p>No description.</p>"),
-        ],
-      ),
-    );
-  }
-
+        Html(data: course.description ?? "<p>No description.</p>"),
+      ],
+    ),
+  );
+}
 
 Widget _buildCourseHeader(BuildContext context, CouseDeatilsResponse course) {
   const Color tealBrand = Color(0xFF2C7A7B);
@@ -497,7 +501,11 @@ Widget _buildSocialIcon(IconData icon, Color bg) {
   );
 }
 
-Widget _buildStudentReviewsCard(BuildContext context, CouseDeatilsResponse course, CourseReviewModel reviews) {
+Widget _buildStudentReviewsCard(
+  BuildContext context,
+  CouseDeatilsResponse course,
+  CourseReviewModel reviews,
+) {
   const Color textPrimary = Color(0xFF0F172A); // Dark Slate/Blue
   const Color textSecondary = Color(0xFF64748B); // Muted Gray
   const Color starColor = Color(0xFFF59E0B); // Vibrant Orange Star Tint
@@ -567,53 +575,55 @@ Widget _buildStudentReviewsCard(BuildContext context, CouseDeatilsResponse cours
         const SizedBox(height: 20.0),
 
         // --- 2. EMPTY STATE SUBTEXT INDICATOR ---
-   // --- 2. REVIEW STATE BRANCHING ---
-reviews.results == null || reviews.results!.isEmpty
-    ? const Text(
-        "No reviews yet. Be the first to write one.",
-        style: TextStyle(
-          color: textSecondary,
-          fontSize: 13.0,
-          fontWeight: FontWeight.w400,
-        ),
-      )
-    : Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ...reviews.results!.map((review) => _buildIndividualReviewTile(review)),
-        ],
-      ),
+        // --- 2. REVIEW STATE BRANCHING ---
+        reviews.results == null || reviews.results!.isEmpty
+            ? const Text(
+                "No reviews yet. Be the first to write one.",
+                style: TextStyle(
+                  color: textSecondary,
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w400,
+                ),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...reviews.results!.map(
+                    (review) => _buildIndividualReviewTile(review),
+                  ),
+                ],
+              ),
         const SizedBox(height: 20.0),
 
         // --- 3. OUTLINED ACTION BUTTON ---
         OutlinedButton(
-         onPressed: () async {
-  // 1. Await the asynchronous access token check
-  final String? accessToken = await TokenStorage.getAccessToken();
+          onPressed: () async {
+            // 1. Await the asynchronous access token check
+            final String? accessToken = await TokenStorage.getAccessToken();
 
-  // 2. Ensure context is still alive after the async file/secure storage check
-  if (!context.mounted) return;
+            // 2. Ensure context is still alive after the async file/secure storage check
+            if (!context.mounted) return;
 
-  // 3. Evaluate your token condition safely
-  if (accessToken != null && accessToken.isNotEmpty) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => WriteReviewDialog(courseId: course.id!),
-    );
-  } else {
-    // 4. Fallback: Prompt user to login if they are unauthenticated
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Please sign in to write a review."),
-        backgroundColor: Colors.orangeAccent,
-      ),
-    );
-    // Optional: Route to your login path here
-    // context.push(TeachersRoutes.login);
-  }
-},
+            // 3. Evaluate your token condition safely
+            if (accessToken != null && accessToken.isNotEmpty) {
+              showDialog(
+                context: context,
+                barrierDismissible: true,
+                builder: (context) => WriteReviewDialog(courseId: course.id!),
+              );
+            } else {
+              // 4. Fallback: Prompt user to login if they are unauthenticated
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Please sign in to write a review."),
+                  backgroundColor: Colors.orangeAccent,
+                ),
+              );
+              // Optional: Route to your login path here
+              // context.push(TeachersRoutes.login);
+            }
+          },
           style: OutlinedButton.styleFrom(
             // Setting double.infinity here forces full horizontal growth internally
             minimumSize: const Size(double.infinity, 48.0),
@@ -651,8 +661,18 @@ Widget _buildIndividualReviewTile(Results review) {
     try {
       final DateTime parsedDate = DateTime.parse(review.createdAt!);
       const List<String> months = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
       ];
       formattedDate = "${months[parsedDate.month - 1]} ${parsedDate.year}";
     } catch (_) {
@@ -671,7 +691,9 @@ Widget _buildIndividualReviewTile(Results review) {
     margin: const EdgeInsets.only(bottom: 12.0),
     padding: const EdgeInsets.all(16.0),
     decoration: BoxDecoration(
-      color: const Color(0xFFF8FAFC), // Subtle light tint layout box container shading background
+      color: const Color(
+        0xFFF8FAFC,
+      ), // Subtle light tint layout box container shading background
       borderRadius: BorderRadius.circular(12.0),
       border: Border.all(color: cardBorderColor, width: 1.0),
     ),
@@ -950,7 +972,7 @@ Widget _curriculumLessionSection(
             return
             // Section Card
             Padding(
-              padding: const EdgeInsets.only(bottom : 8.0),
+              padding: const EdgeInsets.only(bottom: 8.0),
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey.shade200),
@@ -972,111 +994,112 @@ Widget _curriculumLessionSection(
                     ),
                     subtitle: Text(
                       "${module.totalLessons} lessons • ${module.totalDuration} hours",
-                      style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
+                      style: TextStyle(
+                        color: Colors.grey.shade500,
+                        fontSize: 12,
+                      ),
                     ),
-                    children:  course.hasAccess! ?  
-                    
-                    List.generate(module.lessons?.length ?? 0, (index) {
-                      final data = module.lessons?[index];
-                      if (data == null) return const SizedBox.shrink();
-              
-                      switch (data.contentType) {
-                        case "video":
-                          return _buildLessonRow(
-                            Icons
-                                .play_circle_outline_rounded, // Perfect for video streaming lessons
-                            data.title ?? "Untitled Video",
-                            "${data.durationInMinutes ?? "0"} mins",
-                          );
-              
-                        case "assignment":
-                          return _buildLessonRow(
-                            Icons.assignment_outlined, // Standard assignment icon
-                            data.title ?? "Untitled Assignment",
-                            "Assignment",
-                            isAssignment: true,
-                          );
-              
-                        case "document":
-                          return _buildLessonRow(
-                            Icons
-                                .description_outlined, // Perfect file/PDF document icon
-                            data.title ?? "Untitled Document",
-                            "Document", // Fixed fallback subtitle
-                            isAssignment:
-                                false, // Changed to false unless it grades like an assignment
-                          );
-              
-                        case "quiz":
-                          return _buildLessonRow(
-                            Icons
-                                .quiz_outlined, // Perfect dedicated question/quiz icon
-                            data.title ?? "Untitled Quiz",
-                            "Quiz Assessment", // Fixed fallback subtitle
-                            isAssignment:
-                                true, // Typically acts as an assessment block
-                          );
-              
-                        default:
-                          // Catch-all fallback for any unhandled media categories
-                          return _buildLessonRow(
-                            Icons.insert_drive_file_outlined,
-                            data.title ?? "Lesson Extra",
-                            "Attachment",
-                          );
-                      }
-                    })
-                 
-                 : 
-                    List.generate(module.lessons?.length ?? 0, (index) {
-                      final data = module.lessons?[index];
-                      if (data == null) return const SizedBox.shrink();
-              
-                      switch (data.contentType) {
-                        case "video":
-                          return _buildLessonRow(
-                           Icons.lock, // Perfect for video streaming lessons
-                            data.title ?? "Untitled Video",
-                            "${data.durationInMinutes ?? "0"} mins",
-                          );
-              
-                        case "assignment":
-                          return _buildLessonRow(
-                             Icons.lock, // Standard assignment icon
-                            data.title ?? "Untitled Assignment",
-                            "Assignment",
-                            isAssignment: true,
-                          );
-              
-                        case "document":
-                          return _buildLessonRow(
-                              Icons.lock,// Perfect file/PDF document icon
-                            data.title ?? "Untitled Document",
-                            "Document", // Fixed fallback subtitle
-                            isAssignment:
-                                false, // Changed to false unless it grades like an assignment
-                          );
-              
-                        case "quiz":
-                          return _buildLessonRow(
-                             Icons.lock,// Perfect dedicated question/quiz icon
-                            data.title ?? "Untitled Quiz",
-                            "Quiz Assessment", // Fixed fallback subtitle
-                            isAssignment:
-                                true, // Typically acts as an assessment block
-                          );
-              
-                        default:
-                          // Catch-all fallback for any unhandled media categories
-                          return _buildLessonRow( 
-                              Icons.lock,
-                            data.title ?? "Lesson Extra",
-                            "Attachment",
-                          );
-                      }
-                    }),
-                 
-                 
+                    children: course.hasAccess!
+                        ? List.generate(module.lessons?.length ?? 0, (index) {
+                            final data = module.lessons?[index];
+                            if (data == null) return const SizedBox.shrink();
+
+                            switch (data.contentType) {
+                              case "video":
+                                return _buildLessonRow(
+                                  Icons
+                                      .play_circle_outline_rounded, // Perfect for video streaming lessons
+                                  data.title ?? "Untitled Video",
+                                  "${data.durationInMinutes ?? "0"} mins",
+                                );
+
+                              case "assignment":
+                                return _buildLessonRow(
+                                  Icons
+                                      .assignment_outlined, // Standard assignment icon
+                                  data.title ?? "Untitled Assignment",
+                                  "Assignment",
+                                  isAssignment: true,
+                                );
+
+                              case "document":
+                                return _buildLessonRow(
+                                  Icons
+                                      .description_outlined, // Perfect file/PDF document icon
+                                  data.title ?? "Untitled Document",
+                                  "Document", // Fixed fallback subtitle
+                                  isAssignment:
+                                      false, // Changed to false unless it grades like an assignment
+                                );
+
+                              case "quiz":
+                                return _buildLessonRow(
+                                  Icons
+                                      .quiz_outlined, // Perfect dedicated question/quiz icon
+                                  data.title ?? "Untitled Quiz",
+                                  "Quiz Assessment", // Fixed fallback subtitle
+                                  isAssignment:
+                                      true, // Typically acts as an assessment block
+                                );
+
+                              default:
+                                // Catch-all fallback for any unhandled media categories
+                                return _buildLessonRow(
+                                  Icons.insert_drive_file_outlined,
+                                  data.title ?? "Lesson Extra",
+                                  "Attachment",
+                                );
+                            }
+                          })
+                        : List.generate(module.lessons?.length ?? 0, (index) {
+                            final data = module.lessons?[index];
+                            if (data == null) return const SizedBox.shrink();
+
+                            switch (data.contentType) {
+                              case "video":
+                                return _buildLessonRow(
+                                  Icons
+                                      .lock, // Perfect for video streaming lessons
+                                  data.title ?? "Untitled Video",
+                                  "${data.durationInMinutes ?? "0"} mins",
+                                );
+
+                              case "assignment":
+                                return _buildLessonRow(
+                                  Icons.lock, // Standard assignment icon
+                                  data.title ?? "Untitled Assignment",
+                                  "Assignment",
+                                  isAssignment: true,
+                                );
+
+                              case "document":
+                                return _buildLessonRow(
+                                  Icons.lock, // Perfect file/PDF document icon
+                                  data.title ?? "Untitled Document",
+                                  "Document", // Fixed fallback subtitle
+                                  isAssignment:
+                                      false, // Changed to false unless it grades like an assignment
+                                );
+
+                              case "quiz":
+                                return _buildLessonRow(
+                                  Icons
+                                      .lock, // Perfect dedicated question/quiz icon
+                                  data.title ?? "Untitled Quiz",
+                                  "Quiz Assessment", // Fixed fallback subtitle
+                                  isAssignment:
+                                      true, // Typically acts as an assessment block
+                                );
+
+                              default:
+                                // Catch-all fallback for any unhandled media categories
+                                return _buildLessonRow(
+                                  Icons.lock,
+                                  data.title ?? "Lesson Extra",
+                                  "Attachment",
+                                );
+                            }
+                          }),
                   ),
                 ),
               ),
@@ -1134,9 +1157,6 @@ Widget _buildLessonRow(
               ),
             ),
           ),
-         
-
-         
         ],
       ),
     ),
@@ -1408,10 +1428,12 @@ Widget _buildCourseDetailsCard(CouseDeatilsResponse course) {
   );
 }
 
-
-Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) {
+Widget _buildScholarshipCard(
+  BuildContext context,
+  CouseDeatilsResponse course,
+) {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  
+
   // Design Theme Palette matching your screens
   const Color tealBrand = Color(0xFF2C7A7B);
   const Color textPrimary = Color(0xFF0F172A);
@@ -1466,7 +1488,7 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
           const SizedBox(height: 32.0),
 
           // --- 2. INPUT GRID LAYOUT FIELDS ---
-          
+
           // Row 1: Name & Email
           _buildResponsiveRow(
             child1: _buildInputField(
@@ -1489,7 +1511,11 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
             child1: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFieldLabel("Phone Number", isRequired: true, labelColor: textSecondary),
+                _buildFieldLabel(
+                  "Phone Number",
+                  isRequired: true,
+                  labelColor: textSecondary,
+                ),
                 Row(
                   children: [
                     // Mock Country Dropdown Selector Container
@@ -1503,15 +1529,29 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
                       ),
                       child: Row(
                         children: [
-                          Text("AE +971", style: TextStyle(color: textPrimary, fontSize: 13.0)),
-                          const Icon(Icons.arrow_drop_down, color: textSecondary, size: 20.0),
+                          Text(
+                            "AE +971",
+                            style: TextStyle(
+                              color: textPrimary,
+                              fontSize: 13.0,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_drop_down,
+                            color: textSecondary,
+                            size: 20.0,
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(width: 8.0),
                     // Main Phone Input Target
                     Expanded(
-                      child: _buildBaseTextField(hint: "Enter phone number", inputBg: inputBgColor, borderCol: fieldBorderColor),
+                      child: _buildBaseTextField(
+                        hint: "Enter phone number",
+                        inputBg: inputBgColor,
+                        borderCol: fieldBorderColor,
+                      ),
                     ),
                   ],
                 ),
@@ -1530,7 +1570,11 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
             child1: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFieldLabel("Current Level of Study", isRequired: true, labelColor: textSecondary),
+                _buildFieldLabel(
+                  "Current Level of Study",
+                  isRequired: true,
+                  labelColor: textSecondary,
+                ),
                 Container(
                   height: 48.0,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -1542,8 +1586,18 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Select level", style: TextStyle(color: textSecondary.withOpacity(0.7), fontSize: 14.0)),
-                      const Icon(Icons.keyboard_arrow_down, color: textSecondary, size: 18.0),
+                      Text(
+                        "Select level",
+                        style: TextStyle(
+                          color: textSecondary.withOpacity(0.7),
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      const Icon(
+                        Icons.keyboard_arrow_down,
+                        color: textSecondary,
+                        size: 18.0,
+                      ),
                     ],
                   ),
                 ),
@@ -1582,7 +1636,10 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildFieldLabel("Upload Personal Statement or Motivation Letter", labelColor: textSecondary),
+              _buildFieldLabel(
+                "Upload Personal Statement or Motivation Letter",
+                labelColor: textSecondary,
+              ),
               Container(
                 height: 48.0,
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -1594,8 +1651,18 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Choose Files", style: TextStyle(color: textSecondary.withOpacity(0.7), fontSize: 14.0)),
-                    const Icon(Icons.upload_file_outlined, color: textSecondary, size: 18.0),
+                    Text(
+                      "Choose Files",
+                      style: TextStyle(
+                        color: textSecondary.withOpacity(0.7),
+                        fontSize: 14.0,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.upload_file_outlined,
+                      color: textSecondary,
+                      size: 18.0,
+                    ),
                   ],
                 ),
               ),
@@ -1634,66 +1701,90 @@ Widget _buildScholarshipCard(BuildContext context, CouseDeatilsResponse course) 
 
           // --- 4. ACTION SUBMIT CONTROL FOOTER BUTTONS ---
           Row(
-  children: [
-    // --- 1. CANCEL BUTTON ---
-    Expanded(
-      child: OutlinedButton(
-        onPressed: () {
-          // Handle cancellation action or view pop
-        },
-        style: OutlinedButton.styleFrom(
-          // Reduced horizontal padding to allow more layout space for the text itself
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
-          side: const BorderSide(color: fieldBorderColor),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24.0),
+            children: [
+              // --- 1. CANCEL BUTTON ---
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    // Handle cancellation action or view pop
+                  },
+                  style: OutlinedButton.styleFrom(
+                    // Reduced horizontal padding to allow more layout space for the text itself
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 14.0,
+                    ),
+                    side: const BorderSide(color: fieldBorderColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                  ),
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(
+                      color: textPrimary,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Clean structural separation gap between action targets
+              const SizedBox(width: 16.0),
+
+              // --- 2. SUBMIT APPLICATION BUTTON ---
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // 1. Run form validation check routines
+                    if (formKey.currentState?.validate() ?? false) {
+                      // 2. Fetch token safely without using dangerous force-unwrap (!) operators
+                      final data = await TokenStorage.getAccessToken();
+
+                      // 3. Fallback check: If token is null OR completely blank string characters
+                      if (data == null || data.isEmpty) {
+                        if (context.mounted) {
+                          CustomSnackbar.show(
+                            context,
+                            message: "Please login first",
+                            backgroundColor: Colors.red,
+                          );
+                        }
+                        return; // Stop execution thread right here
+                      }
+
+                      // 4. Proceed with processing logic safely when token exists
+                      if (context.mounted) {
+                        // Trigger your API provider submit application thread actions here...
+                      }
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: tealBrand,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 14.0,
+                    ),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                  ),
+                  child: const Text(
+                    "Send Application",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ),
-        child: const Text(
-          "Cancel",
-          style: TextStyle(
-            color: textPrimary,
-            fontSize: 14.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    ),
-    
-    // Clean structural separation gap between action targets
-    const SizedBox(width: 16.0),
-    
-    // --- 2. SUBMIT APPLICATION BUTTON ---
-    Expanded(
-      child: ElevatedButton(
-        onPressed: () {
-          if (formKey.currentState?.validate() ?? false) {
-            // Execute Submit Application Pipeline
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: tealBrand,
-          foregroundColor: Colors.white,
-          // Reduced horizontal padding prevents text from breaking into two lines or overflowing on small screens
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 14.0),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24.0),
-          ),
-        ),
-        child: const Text(
-          "Send Application",
-          maxLines: 1, // Guarantees the button label doesn't wrap weirdly
-          overflow: TextOverflow.ellipsis, // Clean fallback safety layer
-          style: TextStyle(
-            fontSize: 14.0,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    ),
-  ],
-)
         ],
       ),
     ),
@@ -1714,13 +1805,7 @@ Widget _buildResponsiveRow({required Widget child1, required Widget child2}) {
           ],
         );
       } else {
-        return Column(
-          children: [
-            child1,
-            const SizedBox(height: 16.0),
-            child2,
-          ],
-        );
+        return Column(children: [child1, const SizedBox(height: 16.0), child2]);
       }
     },
   );
@@ -1738,16 +1823,26 @@ Widget _buildInputField({
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       _buildFieldLabel(label, isRequired: isRequired, labelColor: labelColor),
-      _buildBaseTextField(hint: hint, maxLines: maxLines, inputBg: const Color(0xFFF8FAFC), borderCol: const Color(0xFFE2E8F0)),
+      _buildBaseTextField(
+        hint: hint,
+        maxLines: maxLines,
+        inputBg: const Color(0xFFF8FAFC),
+        borderCol: const Color(0xFFE2E8F0),
+      ),
     ],
   );
 }
 
-Widget _buildFieldLabel(String label, {bool isRequired = false, required Color labelColor}) {
+Widget _buildFieldLabel(
+  String label, {
+  bool isRequired = false,
+  required Color labelColor,
+}) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 6.0),
     child: SizedBox(
-      width: double.infinity, // Ensures the layout block fills the input container's bounds
+      width: double
+          .infinity, // Ensures the layout block fills the input container's bounds
       child: RichText(
         text: TextSpan(
           text: label,
@@ -1755,14 +1850,18 @@ Widget _buildFieldLabel(String label, {bool isRequired = false, required Color l
             color: labelColor,
             fontSize: 13.0,
             fontWeight: FontWeight.bold,
-            fontFamily: '', // Inherits your default application text font style cleanly
+            fontFamily:
+                '', // Inherits your default application text font style cleanly
           ),
           children: [
             if (isRequired)
               const TextSpan(
-                text: " *", // Adds clean inline spacing right before the red asterisk
+                text:
+                    " *", // Adds clean inline spacing right before the red asterisk
                 style: TextStyle(
-                  color: Color(0xFFEF4444), // Vibrant error red asterisk color indicator
+                  color: Color(
+                    0xFFEF4444,
+                  ), // Vibrant error red asterisk color indicator
                   fontSize: 13.0,
                   fontWeight: FontWeight.bold,
                 ),
@@ -1774,7 +1873,12 @@ Widget _buildFieldLabel(String label, {bool isRequired = false, required Color l
   );
 }
 
-Widget _buildBaseTextField({required String hint, int maxLines = 1, required Color inputBg, required Color borderCol}) {
+Widget _buildBaseTextField({
+  required String hint,
+  int maxLines = 1,
+  required Color inputBg,
+  required Color borderCol,
+}) {
   return TextFormField(
     maxLines: maxLines,
     decoration: InputDecoration(
@@ -1782,7 +1886,10 @@ Widget _buildBaseTextField({required String hint, int maxLines = 1, required Col
       hintStyle: const TextStyle(color: Color(0x9464748B), fontSize: 14.0),
       fillColor: inputBg,
       filled: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 12.0,
+      ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
         borderSide: BorderSide(color: borderCol, width: 1.0),
@@ -1794,6 +1901,7 @@ Widget _buildBaseTextField({required String hint, int maxLines = 1, required Col
     ),
   );
 }
+
 // --- HELPER METADATA ROW GENERATOR ---
 Widget _buildDetailsRow({
   required String label,

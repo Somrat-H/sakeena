@@ -23,7 +23,7 @@ class GuestShell extends StatelessWidget {
     } else if (location.startsWith(AppRoutes.courseGuest) ||
         location.startsWith(AppRoutes.myCourseScreen)) {
       return 1;
-    } else if (location.startsWith(AppRoutes.consultation)) {
+    } else if (location.startsWith(AppRoutes.consultationGuest)) {
       return 2;
     } else if (location.startsWith(AppRoutes.bookGuest)) {
       return 3; // Position index 3 allocated for dynamic blogs route tracker
@@ -52,7 +52,7 @@ class GuestShell extends StatelessWidget {
         context.go(AppRoutes.courseGuest);
         break;
       case 2:
-        context.go(AppRoutes.consultation);
+        context.go(AppRoutes.consultationGuest);
         break;
       case 3:
         context.go(AppRoutes.bookGuest);

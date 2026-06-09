@@ -48,7 +48,12 @@ final List<DrawerMenuItem> studentMenuItems = [
   DrawerMenuItem(
     label: 'Blog',
     icon: Icons.article_outlined,
-    route: AppRoutes.bookGuest,
+    route: AppRoutes.blogsGuest,
+  ),
+   DrawerMenuItem(
+    label: 'Video',
+    icon: Icons.play_circle,
+    route: AppRoutes.videoLibraryScreen,
   ),
   DrawerMenuItem(
     label: 'Profile',
@@ -71,7 +76,6 @@ class StudentMenuDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final currentRoute = GoRouterState.of(context).uri.toString();
-
     return SafeArea(
       child: Drawer(
         backgroundColor: Colors.white,
@@ -84,7 +88,6 @@ class StudentMenuDrawer extends StatelessWidget {
                 child: ListView(
                   children: studentMenuItems.map((item) {
                     final isActive = currentRoute.startsWith(item.route);
-
                     return _MenuTile(
                       label: item.label,
                       icon: item.icon,

@@ -5,19 +5,19 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/core/app_theme.dart';
 import 'package:sakeena/features/auth/controller/auth_controller.dart';
+import 'package:sakeena/features/guest_portion/cart/provider/cart_provider.dart';
 import 'package:sakeena/features/guest_portion/home/provider/guest_navbar_provider.dart';
 import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart';
+import 'package:sakeena/features/guest_portion/video/provider/video_library_provider.dart';
 import 'package:sakeena/features/student/course/provider/student_course_provider.dart';
 import 'package:sakeena/features/student/home/provider/student_dashboard_provider.dart';
 import 'package:sakeena/features/student/profile/controller/profile_controller.dart';
 import 'package:sakeena/features/teachers/content/controller/content_controller.dart';
 import 'package:sakeena/features/teachers/course_detail/controller/teacher_course_details_controller.dart';
-import 'package:sakeena/features/teachers/courses/controller/teacher_course_controller.dart';
 import 'package:sakeena/features/teachers/dashboard/controller/teacher_dashboard_controller.dart';
 import 'package:sakeena/features/teachers/profile/controller/teacher_profile_controller.dart';
 import 'package:sakeena/features/teachers/submission/presentation/providers/submission_provider.dart';
 import 'package:sakeena/route/go_route.dart'; // assuming this exports createRouter()
-import 'package:sakeena/view_model/auth_view_model.dart';
 import 'package:sakeena/view_model/user_provider.dart';
 
 void main() async {
@@ -53,12 +53,10 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MultiProvider(
           providers: [
-             ChangeNotifierProvider(create: (_) => GuestNavProvider()),
+            ChangeNotifierProvider(create: (_) => GuestNavProvider()),
             ChangeNotifierProvider(create: (_) => UserProvider()),
             ChangeNotifierProvider(create: (_) => AuthControlle()),
-            ChangeNotifierProvider(
-              create: (_) => ProfileController(),
-            ),
+            ChangeNotifierProvider(create: (_) => ProfileController()),
             ChangeNotifierProvider(
               create: (_) => TeacherProfileController()..fetchTeacherProfile(),
             ),
@@ -66,18 +64,24 @@ class MyApp extends StatelessWidget {
             //   create: (_) => TeacherCourseController()..getCourseCategory()..getTeacherCourse(),
             // ),
             ChangeNotifierProvider(
-              create: (_) => StudentCourseProvider()..getCourseCategory()..getStudentCourse(),
+              create: (_) => StudentCourseProvider()
+                ..getCourseCategory()
+                ..getStudentCourse(),
             ),
             ChangeNotifierProvider(create: (_) => SubmissionProvider()),
             ChangeNotifierProvider(create: (_) => TeacherDashboardController()),
-            ChangeNotifierProvider(create: (_)=> ContentController()..getContent()),
-              ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
-               ChangeNotifierProvider(create: (_) => TeacherCourseDetailsController()),
-
+            ChangeNotifierProvider(
+              create: (_) => ContentController()..getContent(),
+            ),
+            ChangeNotifierProvider(create: (_) => StudentDashboardProvider()),
+            ChangeNotifierProvider(
+              create: (_) => TeacherCourseDetailsController(),
+            ),
 
             //guest
-                ChangeNotifierProvider(create: (_) => HomeGuestProvider())
-            
+            ChangeNotifierProvider(create: (_) => HomeGuestProvider()),
+            ChangeNotifierProvider(create: (_) => VideoLibraryProvider()..getVideos()),
+             ChangeNotifierProvider(create: (_) => CartProvider()),
           ],
           child: MaterialApp.router(
             title: 'Sakeena Institute',

@@ -1,9 +1,12 @@
 import 'dart:async'; // Required for Timer processing
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:sakeena/features/guest_portion/home/provider/guest_navbar_provider.dart';
 import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart';
 import 'package:sakeena/features/guest_portion/home/view/widget/blog_card.dart';
+import 'package:sakeena/route/go_route.dart';
 
 class BlogsGuestScreen extends StatefulWidget {
   const BlogsGuestScreen({super.key});
@@ -28,9 +31,9 @@ class _BlogsGuestScreenState extends State<BlogsGuestScreen> {
   void initState() {
     super.initState();
     // Fetch initial records cleanly when screen loads
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeGuestProvider>().getBlogByFilter("page", "1");
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   context.read<HomeGuestProvider>().getBlogByFilter("page", "1");
+    // });
   }
 
   @override
@@ -279,7 +282,14 @@ class _BlogsGuestScreenState extends State<BlogsGuestScreen> {
                   final article = controller.blogModel!.results![index];
                   return BlogCard(
                     blog: article,
-                    onReadMore: () {},
+                    onReadMore: () {
+                 
+
+                                  context.push(
+                                  AppRoutes.blogDetails,
+                                  extra: article.slug,
+                                );
+                    },
                   );
                 },
               ),

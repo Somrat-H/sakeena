@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/features/guest_portion/home/model/faculty_details_model.dart';
 import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart';
@@ -86,7 +87,20 @@ class ConsultantDetailsScreen extends StatelessWidget {
                             const SizedBox(width: 20.0),
                             Expanded(
                               flex: 2,
-                              child: _buildAchievementsCard(textPrimary),
+                              child:
+                                  provider
+                                          .consultationMemberDeatils
+                                          ?.achievements
+                                          ?.isNotEmpty ==
+                                      true
+                                  ? _buildAchievementsCard(
+                                      textPrimary,
+                                      provider
+                                          .consultationMemberDeatils!
+                                          .achievements!
+                                          .first,
+                                    )
+                                  : const SizedBox.shrink(), // Takes up absolutely zero space when empty
                             ),
                           ],
                         );
@@ -99,7 +113,19 @@ class ConsultantDetailsScreen extends StatelessWidget {
                               const Color(0xFF64748B),
                             ),
                             const SizedBox(height: 20.0),
-                            _buildAchievementsCard(textPrimary),
+                            provider
+                                        .consultationMemberDeatils
+                                        ?.achievements
+                                        ?.isNotEmpty ==
+                                    true
+                                ? _buildAchievementsCard(
+                                    textPrimary,
+                                    provider
+                                        .consultationMemberDeatils!
+                                        .achievements!
+                                        .first,
+                                  )
+                                : const SizedBox.shrink(), // Takes up absolutely zero space when empty
                           ],
                         );
                       }
@@ -373,7 +399,7 @@ class ConsultantDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAchievementsCard(Color textPrimary) {
+  Widget _buildAchievementsCard(Color textPrimary, String value) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24.0),
@@ -393,7 +419,8 @@ class ConsultantDetailsScreen extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 80.0),
+          const SizedBox(height: 10.0),
+          Html(data: value),
         ],
       ),
     );

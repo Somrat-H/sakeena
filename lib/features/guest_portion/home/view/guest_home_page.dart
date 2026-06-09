@@ -9,6 +9,7 @@ import 'package:sakeena/features/guest_portion/home/view/widget/book_card.dart';
 import 'package:sakeena/features/guest_portion/home/view/widget/bundle_card.dart';
 import 'package:sakeena/features/guest_portion/home/view/widget/healing_list_widget.dart';
 import 'package:sakeena/features/guest_portion/home/view/widget/plan_card.dart';
+import 'package:sakeena/network/app_url/app_urls.dart';
 import 'package:sakeena/route/go_route.dart';
 import 'package:sakeena/route/teachers_routes.dart';
 import 'package:sakeena/widgets/course_card.dart';
@@ -27,7 +28,9 @@ class GuestHomePage extends StatelessWidget {
       backgroundColor: const Color(
         0xFFFDFBF7,
       ), // Warm light background matching the image mockup
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(
+         onTapCart: () => context.push(AppRoutes.cart),
+      ),
       body: SafeArea(
         child: controller.isDoorsLoading
             ? const Center(child: CircularProgressIndicator(color: tealColor))

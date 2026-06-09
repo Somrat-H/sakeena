@@ -220,10 +220,10 @@ class _CourseGuestScreenState extends State<CourseGuestScreen> {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        "Instructor: ",
-                        style: TextStyle(color: descTextColor, fontSize: 13.sp),
-                      ),
+                      // Text(
+                      //   "Instructor: ",
+                      //   style: TextStyle(color: descTextColor, fontSize: 13.sp),
+                      // ),
                       // Container(
                       //   padding: EdgeInsets.symmetric(horizontal: 12.w),
                       //   height: 32.h,

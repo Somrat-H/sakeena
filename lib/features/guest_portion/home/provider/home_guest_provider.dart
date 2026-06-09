@@ -44,11 +44,11 @@ class HomeGuestProvider extends ChangeNotifier {
   BlogModel blogModel = BlogModel();
 
   FacultyModel facultyModel = FacultyModel();
-
+  
   FacultyModel consultationMemberList = FacultyModel();
 
   FacultyDetailsModel consultationMemberDeatils = FacultyDetailsModel();
-
+    FacultyDetailsModel facultyDetailsModel = FacultyDetailsModel();
   BundleDetailsModel bundleDetailsModel = BundleDetailsModel();
   BookDetailsModel bookDetailsModel = BookDetailsModel();
   BlogDetailsModel blogDetailsModel = BlogDetailsModel(); 
@@ -416,6 +416,28 @@ Future<void> getBlogByFilter(String name,String value) async {
     } catch (e) {
       debugPrint("Error fetching doors: $e");
       consultationMemberDeatils = FacultyDetailsModel();
+    } finally {
+      // Safely toggle loaders off regardless of network errors
+      isDetailsLaoding = false;
+      notifyListeners();
+    }
+  }
+    Future<void> getFacultyDetails(int id) async {
+    isDetailsLaoding = true;
+    notifyListeners();
+
+    try {
+      final response = await ApiService().getData("/teacher-profiles/$id/");
+      if (response.isNotEmpty) {
+        facultyDetailsModel = FacultyDetailsModel.fromJson(response);
+        notifyListeners();
+      } else {
+        facultyDetailsModel =
+            FacultyDetailsModel(); // Explicitly clear data if API returns an empty list
+      }
+    } catch (e) {
+      debugPrint("Error fetching doors: $e");
+      facultyDetailsModel = FacultyDetailsModel();
     } finally {
       // Safely toggle loaders off regardless of network errors
       isDetailsLaoding = false;

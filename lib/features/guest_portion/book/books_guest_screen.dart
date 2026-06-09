@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:sakeena/features/guest_portion/home/provider/home_guest_provider.dart';
 import 'package:sakeena/features/guest_portion/home/view/widget/book_card.dart';
+import 'package:sakeena/route/go_route.dart';
 
 class BooksGuestScreen extends StatefulWidget {
   const BooksGuestScreen({super.key});
@@ -258,7 +260,6 @@ class _BooksGuestScreenState extends State<BooksGuestScreen> {
                 ),
                 itemBuilder: (context, index) {
                   final singleBook = controller.booksModel!.results![index];
-
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 6,
@@ -267,7 +268,10 @@ class _BooksGuestScreenState extends State<BooksGuestScreen> {
                     child: BookCard(
                       book: singleBook,
                       onViewDetails: () {
-                        // Action navigation logic...
+                        context.push(
+                                  AppRoutes.bookDetails,
+                                  extra: singleBook.slug,
+                                );
                       },
                     ),
                   );

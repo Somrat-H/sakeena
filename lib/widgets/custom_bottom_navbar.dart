@@ -34,7 +34,7 @@ class BottomNavItem {
   BottomNavItem(
     label: 'Consultation',
     svgPath: 'assets/icons/teacher-icon.svg',
-    route: AppRoutes.consultation,
+    route: AppRoutes.consultationGuest,
   ),
   BottomNavItem(
     label: 'Books',
@@ -43,7 +43,7 @@ class BottomNavItem {
   ),
     BottomNavItem(
     label: 'Blogs',
-    svgPath: 'assets/icons/blog-icon.svg',
+    icon: Icons.article_outlined,
     route: AppRoutes.blogsGuest,
   ),
   BottomNavItem(

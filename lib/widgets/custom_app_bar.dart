@@ -6,13 +6,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
   final VoidCallback? onBack;
   final VoidCallback? onNotificationTap;
+  final VoidCallback ? onTapCart;
   final String? logoPath;
 
-  const CustomAppBar({
+   const CustomAppBar({
     super.key,
     this.showBackButton = false,
     this.onBack,
     this.onNotificationTap,
+    this.onTapCart,
     this.logoPath = 'assets/images/sakeena_logo.svg',
   });
 
@@ -42,6 +44,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
 
       actions: [
+         IconButton(
+          icon: const Icon(Icons.shopping_cart),
+          color: Colors.black26,
+          onPressed: onTapCart,
+        ),
         IconButton(
           icon: const Icon(Icons.notifications_none),
           color: Colors.black,

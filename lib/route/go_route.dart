@@ -40,6 +40,7 @@ import 'package:sakeena/features/student/teachers/teachers_screen.dart';
 import 'package:sakeena/features/subscription/checkout/checkout_details_page.dart';
 import 'package:sakeena/features/subscription/checkout/checkout_payment_page.dart';
 import 'package:sakeena/features/subscription/checkout/checkout_success_page.dart';
+import 'package:sakeena/features/teachers/course_detail/view/teacher_course_detail_screen.dart';
 
 import 'package:sakeena/route/guest_shell.dart';
 import 'package:sakeena/route/shell_route_for_student.dart';
@@ -105,6 +106,8 @@ class AppRoutes {
   static String onlineVideoView = "/online-video-view";
   static String consultationGuest = "/guest-consultation";
   static String consultationDetails = "/guest-consultation-details";
+
+   static const String courseDetail = '/teachers/course-detail';
   
 
   //login user/student
@@ -163,7 +166,13 @@ GoRouter createRouter() {
         builder: (context, state) => const CheckoutPaymentPage(),
       ),
 
-      
+       GoRoute(
+        path: AppRoutes.courseDetail,
+        builder: (context, state) {
+          final id = state.extra as int;
+          return TeacherCourseDetails(courseId: id);
+        },
+      ),
 
       //guest view
       ShellRoute(

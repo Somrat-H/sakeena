@@ -528,7 +528,6 @@ class CourseCardTeacher extends StatelessWidget {
                        ],
                      ),
                       ElevatedButton(
-                        
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(
                             0xFF317773,

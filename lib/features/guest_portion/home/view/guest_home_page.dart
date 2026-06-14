@@ -151,6 +151,7 @@ class GuestHomePage extends StatelessWidget {
                                             course.status ?? 'Uncategorized',
                                         onViewDetails: () async {
                                           if (course.id != null) {
+                                            
                                             context.push(
                                               TeachersRoutes.courseDetail,
                                               extra: course.id,

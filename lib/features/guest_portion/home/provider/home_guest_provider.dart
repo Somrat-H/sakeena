@@ -48,12 +48,14 @@ class HomeGuestProvider extends ChangeNotifier {
   FacultyModel consultationMemberList = FacultyModel();
 
   FacultyDetailsModel consultationMemberDeatils = FacultyDetailsModel();
-    FacultyDetailsModel facultyDetailsModel = FacultyDetailsModel();
+  FacultyDetailsModel facultyDetailsModel = FacultyDetailsModel();
   BundleDetailsModel bundleDetailsModel = BundleDetailsModel();
   BookDetailsModel bookDetailsModel = BookDetailsModel();
   BlogDetailsModel blogDetailsModel = BlogDetailsModel(); 
 
   CourseReviewModel courseReviewModel = CourseReviewModel();
+
+
 
   Future<void> getDoors() async {
     isDoorsLoading = true;
@@ -76,6 +78,8 @@ class HomeGuestProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+
 
   Future<void> getCourse() async {
     isDoorsLoading = true;
@@ -378,7 +382,7 @@ Future<void> getBlogByFilter(String name,String value) async {
 
   //course review
   Future<void> getCourseReview(int id) async {
-    isDoorsLoading = true;
+    
     notifyListeners();
 
     try {
@@ -395,7 +399,7 @@ Future<void> getBlogByFilter(String name,String value) async {
       courseReviewModel = CourseReviewModel();
     } finally {
       // Safely toggle loaders off regardless of network errors
-      isDoorsLoading = false;
+      
       notifyListeners();
     }
   }
